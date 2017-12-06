@@ -7,12 +7,15 @@ public abstract class Animal implements Soundable, Jumpable {
     private double size;
     private String nickName;
     protected String type;
-    protected double fill;
+    private double fill;
+    protected final long createdAt;
+    private long lastFeedTime;
 
     public Animal(double size, String nickName) {
         setSize(size);
         setNickName(nickName);
-        setFill(120.5);
+        setFill(120);
+        createdAt = System.currentTimeMillis();
     }
 
     @Override
@@ -46,9 +49,12 @@ public abstract class Animal implements Soundable, Jumpable {
 
     public void setFill(double fill) {
         this.fill = fill;
+        lastFeedTime = System.currentTimeMillis();
     }
 
-    public void feed(double val){
+    public double feed(double val){
         setFill(getFill() + val);
+        return getFill();
     }
+
 }

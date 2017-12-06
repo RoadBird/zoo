@@ -3,47 +3,45 @@ package main;
 import animals.Animal;
 import animals.ForestWolf;
 import animals.HouseCat;
-import animals.RoboCat;
 import equipments.ExtensibleCage;
-import interfases.Jumpable;
 import interfases.Soundable;
 
 import java.util.Scanner;
 
 public class Main {
-    static final Scanner scan = new Scanner(System.in);
+    public static final Scanner scan = new Scanner(System.in);
     private final ExtensibleCage cage = new ExtensibleCage();
 
     public Main() {
         System.out.println("Yep, Hello!");
         boolean exit = false;
         do {
-            System.out.println("What do you want?\n" +
+            System.out.println("What do you want??\n" +
                     "1 - Look at all in the Cage\n" +
                     "2 - Feed everyone\n" +
                     "3 - Add new Animal\n" +
                     "4 - Let them jump\n" +
                     "5 - Touch the cage\n" +
                     "0 - Exit");
-            int answer = scan.nextInt();
+            String answer = scan.nextLine();
             switch (answer) {
-                case 1:
+                case "1":
                     showAnimalInfo();
                     break;
-                case 2:
-                    feed(cage.getAnimals());
+                case "2":
+                    feedAnimal();
                     break;
-                case 3:
+                case "3":
                     Animal animal = createAnimal();
                     if (animal != null) cage.addAnimal(animal);
                     break;
-                case 4:
+                case "4":
                     jumpAll();
                     break;
-                case 5:
+                case "5":
                     makeSound(cage.getAnimals());
                     break;
-                case 0:
+                case "0":
                     System.out.println("Thanks!");
                     exit = true;
                     break;
@@ -89,38 +87,30 @@ public class Main {
             System.out.println("None in cage");
     }
 
-//    public void checkFeel(Animal[] animals){
-//        for(Animal animal : animals){
-//            if(animal != null) System.out.println(animal.toString() + "'s feel is " + animal.getFill());
-//        }
-//    }
-
-    public HouseCat createCat() {
-        System.out.println("Enter size of the new Cat");
-        double size = scan.nextDouble();
-        scan.nextLine();
-        System.out.println("And his Name, please");
-        return new HouseCat(size, scan.nextLine());
-    }
-
-    public ForestWolf createWolf() {
-        System.out.println("Enter size of the new Wolf");
-        double size = scan.nextDouble();
-        scan.nextLine();
-        System.out.println("And his Name, please");
-        return new ForestWolf(size, scan.nextLine());
-    }
-
-    public void feed(Animal[] animals) {
-        for (Animal animal : animals) {
-            if (animal != null) animal.setFill(animal.getFill() + animal.getSize() / 2);
+    public void feedAnimal() {
+        while (true) {
+            if (cage.getAnimals().length < 1) {
+                System.out.println("Cage is empty");
+                return;
+            } else {
+                System.out.println("Enter the animal number from 1 to " + cage.getAnimalsCounter() + " or 0 to return");
+                int num = scan.nextInt();
+                scan.nextLine();
+                if (num == 0)
+                    return;
+                else if (num > 0 && num <= cage.getAnimalsCounter()) {
+                    System.out.println(cage.getAnimals()[num - 1].toString() +
+                            " have new fill is " + cage.getAnimals()[num - 1].feed(cage.getAnimals()[num - 1].getFill() / 2));
+                    return;
+                }
+                else
+                    System.out.println("Wrong number cage");
+            }
         }
     }
 
     public Animal createAnimal() {
-        Animal animal = null;
-        boolean exit = false;
-        while (!exit) {
+        while (true) {
             System.out.println("Who do you want to create?\n" +
                     "1 - Add new Cat\n" +
                     "2 - Add new Wolf\n" +
@@ -129,21 +119,15 @@ public class Main {
             scan.nextLine();
             switch (num) {
                 case 1:
-                    animal = createCat();
-                    exit = true;
-                    break;
+                    return HouseCat.createCat();
                 case 2:
-                    animal = createWolf();
-                    exit = true;
-                    break;
+                    return ForestWolf.createWolf();
                 case 0:
-                    exit = true;
-                    break;
+                    return null;
                 default:
                     System.out.println("What? I don't understand you. Try again");
                     break;
             }
         }
-        return animal;
     }
 }

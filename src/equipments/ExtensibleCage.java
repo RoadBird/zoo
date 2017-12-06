@@ -24,4 +24,8 @@ public class ExtensibleCage {
     public Animal[] getAnimals() {
         return cage;
     }
+
+    public int getAnimalsCounter(){
+        return animalsCounter;
+    }
 }

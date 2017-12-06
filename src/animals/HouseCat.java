@@ -1,6 +1,8 @@
 package animals;
 
 
+import main.Main;
+
 public final class HouseCat extends Feline{
     private String breed;
     private final String SOUND = "Meow!";
@@ -26,5 +28,13 @@ public final class HouseCat extends Feline{
     @Override
     public double jump() {
         return getSize() * 2.14;
+    }
+
+    public static HouseCat createCat() {
+        System.out.println("Enter size of the new Cat");
+        double size = Main.scan.nextDouble();
+        Main.scan.nextLine();
+        System.out.println("And his Name, please");
+        return new HouseCat(size, Main.scan.nextLine());
     }
 }
