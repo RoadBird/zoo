@@ -4,6 +4,7 @@ import animals.Animal;
 import animals.ForestWolf;
 import animals.HouseCat;
 import equipments.ExtensibleCage;
+import equipments.SingleCage;
 import interfases.Soundable;
 
 import java.util.Map;
@@ -11,7 +12,7 @@ import java.util.Scanner;
 
 public class Main implements Animal.IAnimalDeadListener {
     public static final Scanner scan = new Scanner(System.in);
-    private final ExtensibleCage cage = new ExtensibleCage();
+    private final ExtensibleCage<Animal> cage = new ExtensibleCage<>();
 
     public Main() {
         System.out.println("Yep, Hello!");
@@ -61,7 +62,13 @@ public class Main implements Animal.IAnimalDeadListener {
     }
 
     public static void main(String[] args) {
-        new Main();
+        SingleCage<HouseCat> catCarrier = new SingleCage<>();
+        HouseCat cat = new HouseCat(12, "Bob");
+        ForestWolf wolf = new ForestWolf(18, "Engry");
+        catCarrier.setHabitant(cat);
+        System.out.println(catCarrier.getHabitant().toString());
+
+        //new Main();
         scan.close();
     }
 
@@ -118,7 +125,7 @@ public class Main implements Animal.IAnimalDeadListener {
                     return;
                 else if (num > 0 && num <= cage.getAnimalsCounter()) {
                     System.out.println(cage.getAnimals()[num - 1].toString() +
-                            " have new fill is " + cage.getAnimals()[num - 1].feed(cage.getAnimals()[num - 1].getFill() / 2));
+                            " have new fill is " + cage.getAnimals()[num - 1].feed(50));
                     return;
                 } else
                     System.out.println("Wrong number cage");
@@ -158,7 +165,7 @@ public class Main implements Animal.IAnimalDeadListener {
             System.out.println("Enter the animal number from 1 to " + cage.getAnimalsCounter() + " or 0 to return");
             int num = scan.nextInt();
             scan.nextLine();
-            if (num > 0 && cage.removeAnimal(num)) {
+            if (num > 0 && cage.removeAnimal(num - 1)) {
                 System.out.println("Animal removed");
                 return;
             } else if (num == 0) {
@@ -170,8 +177,10 @@ public class Main implements Animal.IAnimalDeadListener {
 
     private void removeAnimal(Animal animal) {
         for (int i = 0; i < cage.getAnimalsCounter(); i++) {
-            if (cage.getAnimals()[i].equals(animal))
-                cage.removeAnimal(i + 1);
+            if (cage.getAnimals()[i].equals(animal)) {
+                cage.removeAnimal(i);
+                return;
+            }
         }
     }
 

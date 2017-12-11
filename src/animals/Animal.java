@@ -22,7 +22,7 @@ public abstract class Animal implements Soundable, Jumpable {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Animal " + this.getType() + ": " + this.getNickName();
     }
 
@@ -49,9 +49,9 @@ public abstract class Animal implements Soundable, Jumpable {
     public double getFill() {
         double timeSec = (System.currentTimeMillis() - lastFeedTime) / 1000;
         setFill(fill - timeSec);
-        if(fill <= 0) {
+        if (fill <= 0) {
             isAlive = false;
-            animalDeadListener.onAnimalDead(this);
+            if(animalDeadListener != null) animalDeadListener.onAnimalDead(this);
         }
         return fill;
     }
@@ -65,16 +65,18 @@ public abstract class Animal implements Soundable, Jumpable {
         return isAlive;
     }
 
-    public void setAnimalDeadListener(IAnimalDeadListener animalDeadListener){
+    public void setAnimalDeadListener(IAnimalDeadListener animalDeadListener) {
         this.animalDeadListener = animalDeadListener;
     }
 
-    public double feed(double val){
-        setFill(getFill() + val);
+    public double feed(double val) {
+        double temp = getFill();
+        if (temp > 0)
+            setFill(temp + val);
         return getFill();
     }
 
-    public interface IAnimalDeadListener{
+    public interface IAnimalDeadListener {
         void onAnimalDead(Animal animal);
     }
 
