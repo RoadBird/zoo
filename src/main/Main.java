@@ -1,18 +1,14 @@
 package main;
 
-import animals.Animal;
-import animals.ForestWolf;
-import animals.HouseCat;
+import animals.*;
 import equipments.ExtensibleCage;
 import equipments.SingleCage;
 import interfases.Soundable;
-
-import java.util.Map;
 import java.util.Scanner;
 
 public class Main implements Animal.IAnimalDeadListener {
     public static final Scanner scan = new Scanner(System.in);
-    private final ExtensibleCage<Animal> cage = new ExtensibleCage<>();
+    private final ExtensibleCage<Predator> cage = new ExtensibleCage<>();
 
     public Main() {
         System.out.println("Yep, Hello!");
@@ -37,7 +33,7 @@ public class Main implements Animal.IAnimalDeadListener {
                 case "3":
                     Animal animal = createAnimal();
                     if (animal != null) {
-                        cage.addAnimal(animal);
+                        cage.addAnimal((Predator)animal);
                     }
                     break;
                 case "4":
@@ -62,13 +58,7 @@ public class Main implements Animal.IAnimalDeadListener {
     }
 
     public static void main(String[] args) {
-        SingleCage<HouseCat> catCarrier = new SingleCage<>();
-        HouseCat cat = new HouseCat(12, "Bob");
-        ForestWolf wolf = new ForestWolf(18, "Engry");
-        catCarrier.setHabitant(cat);
-        System.out.println(catCarrier.getHabitant().toString());
-
-        //new Main();
+        new Main();
         scan.close();
     }
 
