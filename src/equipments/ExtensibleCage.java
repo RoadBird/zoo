@@ -1,7 +1,6 @@
 package equipments;
 
 import animals.Animal;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,18 +14,12 @@ public class ExtensibleCage<T extends Animal> {
 
     public boolean removeAnimal(int number) {
         if (number < 0 || number > listCage.size() - 1)
-            return listCage.remove(number) != null;
-        else return false;
+            return false;
+        else return listCage.remove(number) != null;
     }
 
-    public Animal[] getAnimals() {
-        //return listCage.toArray(new Animal[listCage.size()]);
-
-        Animal[] animals = new Animal[listCage.size()];
-        for (int i = 0; i < animals.length; i++) {
-            animals[i] = listCage.get(i);
-        }
-        return animals;
+    public List<T> getAnimals() {
+        return listCage;
     }
 
     public int getAnimalsCounter() {

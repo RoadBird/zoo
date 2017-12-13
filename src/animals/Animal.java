@@ -3,6 +3,7 @@ package animals;
 import interfases.Jumpable;
 import interfases.Soundable;
 
+
 public abstract class Animal implements Soundable, Jumpable {
     private IAnimalDeadListener animalDeadListener;
     private double size;
@@ -16,7 +17,7 @@ public abstract class Animal implements Soundable, Jumpable {
     public Animal(double size, String nickName) {
         setSize(size);
         setNickName(nickName);
-        setFill(120);
+        setFill(5);
         createdAt = System.currentTimeMillis();
         isAlive = true;
     }
