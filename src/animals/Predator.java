@@ -14,4 +14,10 @@ public abstract class Predator extends Land {
     public void setScavenger(boolean scavenger) {
         isScavenger = scavenger;
     }
+
+    public void consume(Herbivore prey){
+        this.feed(prey.getSize());
+        System.out.println(this.toString() + " ate " + prey.toString());
+        prey.onConsumed();
+    }
 }

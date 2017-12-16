@@ -1,7 +1,10 @@
 package animals;
 
+import equipments.ExtensibleCage;
 import interfases.Jumpable;
 import interfases.Soundable;
+
+import javax.naming.ldap.ExtendedRequest;
 
 
 public abstract class Animal implements Soundable, Jumpable {
@@ -13,11 +16,12 @@ public abstract class Animal implements Soundable, Jumpable {
     protected final long createdAt;
     private long lastFeedTime;
     private boolean isAlive;
+    private ExtensibleCage<?> cage;
 
     public Animal(double size, String nickName) {
         setSize(size);
         setNickName(nickName);
-        setFill(5);
+        setFill(120);
         createdAt = System.currentTimeMillis();
         isAlive = true;
     }
@@ -64,6 +68,14 @@ public abstract class Animal implements Soundable, Jumpable {
 
     public boolean isAlive() {
         return isAlive;
+    }
+
+    public ExtensibleCage<?> getCage() {
+        return cage;
+    }
+
+    public void setCage(ExtensibleCage<?> cage) {
+        this.cage = cage;
     }
 
     public void setAnimalDeadListener(IAnimalDeadListener animalDeadListener) {

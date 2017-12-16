@@ -2,18 +2,15 @@ package main;
 
 import animals.*;
 import equipments.ExtensibleCage;
-import equipments.SingleCage;
 import interfases.Soundable;
-import javafx.beans.binding.StringBinding;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main implements Animal.IAnimalDeadListener {
     public static final Scanner scan = new Scanner(System.in);
-    private final ExtensibleCage<Predator> predatorCage = new ExtensibleCage<>();
+    private final ExtensibleCage<Mammals> mammalCage = new ExtensibleCage<>();
     private final ExtensibleCage<Bird> birdCage = new ExtensibleCage<>();
+    private final ExtensibleCage<Herbivore> herbivoreCage = new ExtensibleCage<>();
 
     public Main() {
         System.out.println("Yep, Hello!");
@@ -36,13 +33,7 @@ public class Main implements Animal.IAnimalDeadListener {
                     feedAnimal();
                     break;
                 case "3":
-                    Animal animal = createAnimal();
-                    if (animal != null) {
-                        if (animal instanceof Predator)
-                            predatorCage.addAnimal((Predator) animal);
-                        else if (animal instanceof Bird)
-                            birdCage.addAnimal((Bird) animal);
-                    }
+                    addAnimalInCage();
                     break;
                 case "4":
                     jumpAll();
@@ -51,7 +42,7 @@ public class Main implements Animal.IAnimalDeadListener {
                     removeAnimal();
                     break;
                 case "6":
-                    makeSound(predatorCage.getAnimals());
+                    makeSound();
                     break;
                 case "0":
                     System.out.println("Thanks!");
@@ -74,75 +65,120 @@ public class Main implements Animal.IAnimalDeadListener {
 
     public void showAnimalInfo() {
         StringBuilder stringBuilder = new StringBuilder("\nWho do we have:\n");
-        stringBuilder.append("Cage of Predator:\n");
-        if(predatorCage.getAnimalsCounter() == 0){
-            stringBuilder.append("\tCage is empty\n");
+        stringBuilder.append("\tCage of Mammals:\n");
+        if (mammalCage.getAnimalsCounter() == 0) {
+            stringBuilder.append("Cage is empty\n");
         } else {
-            for (Predator predator : predatorCage.getAnimals()) {
-                stringBuilder.append("Animal ").append(predator.getType()).append(": ");
-                stringBuilder.append(" name - ").append(predator.getNickName()).append(", ");
-                stringBuilder.append("siae - ").append(predator.getSize()).append(", ");
-                stringBuilder.append("fill - ").append(predator.getFill()).append(".\n");
-            }
+            stringBuilder.append(animalInfo(mammalCage));
         }
-        stringBuilder.append("Cage of Bird:\n");
-        if(birdCage.getAnimalsCounter() == 0){
-            stringBuilder.append("\tCage is empty\n");
+        stringBuilder.append("\tCage of Birds:\n");
+        if (birdCage.getAnimalsCounter() == 0) {
+            stringBuilder.append("Cage is empty\n");
         } else {
-            for (Bird bird : birdCage.getAnimals()) {
-                stringBuilder.append("Animal ").append(bird.getType()).append(": ");
-                stringBuilder.append(" name - ").append(bird.getNickName()).append(", ");
-                stringBuilder.append("siae - ").append(bird.getSize()).append(", ");
-                stringBuilder.append("fill - ").append(bird.getFill()).append(".\n");
-            }
+            stringBuilder.append(animalInfo(birdCage));
+        }
+        stringBuilder.append("\tCage of Herbivores:\n");
+        if (herbivoreCage.getAnimalsCounter() == 0) {
+            stringBuilder.append("Cage is empty\n");
+        } else {
+            stringBuilder.append(animalInfo(herbivoreCage));
         }
         System.out.println(stringBuilder.toString());
 
     }
 
-    public void makeSound(List<? extends Soundable> sounds) {
-        if (predatorCage.getAnimalsCounter() < 1) {
+    public String animalInfo(ExtensibleCage<?> someCage) {
+        StringBuilder stringBuilder = new StringBuilder();
+        Animal animal;
+        double check;
+        for (int i = 0; i < someCage.getAnimalsCounter(); i++) {
+            animal = someCage.getAnimals().get(i);
+            if ((check = animal.getFill()) > 0) {
+                stringBuilder.append("Animal ").append(animal.getType()).append(": ");
+                stringBuilder.append(" name - ").append(animal.getNickName()).append(", ");
+                stringBuilder.append("size - ").append(animal.getSize()).append(", ");
+                stringBuilder.append("fill - ").append(check).append(".\n");
+            } else {
+                stringBuilder.append(animal.toString()).append(" is dead. Why?\n");
+                i--;
+            }
+        }
+        return stringBuilder.toString();
+    }
+
+    public void makeSound() {
+        ExtensibleCage<?> cage = chooseCage();
+        if (cage == null)
+            return;
+        if (cage.getAnimalsCounter() < 1) {
             System.out.println("Cage is empty");
             return;
-        } else for (Soundable sound : sounds) {
+        }
+        for (Soundable sound : cage.getAnimals()) {
             if (sound != null) sound.sound();
         }
     }
 
     public void jumpAll() {
-        if (predatorCage.getAnimalsCounter() > 0) {
+        ExtensibleCage<?> cage = chooseCage();
+        if (cage == null)
+            return;
+        if (cage.getAnimalsCounter() < 1) {
+            System.out.println("Cage is empty");
+            return;
+        }
+        if (cage.getAnimalsCounter() > 0) {
             double tmp = 0;
             int t = 0;
-            for (int i = 0; i < predatorCage.getAnimalsCounter(); i++) {
-                if (predatorCage.getAnimals().get(i).jump() > tmp) {
-                    tmp = predatorCage.getAnimals().get(i).jump();
+            for (int i = 0; i < cage.getAnimalsCounter(); i++) {
+                if (cage.getAnimals().get(i).jump() > tmp) {
+                    tmp = cage.getAnimals().get(i).jump();
                     t = i;
                 }
             }
-            System.out.println(predatorCage.getAnimals().get(t).toString() + " has best jump");
+            System.out.println(cage.getAnimals().get(t).toString() + " has best jump");
         } else
             System.out.println("None in cage");
     }
 
     public void feedAnimal() {
         while (true) {
-            if (predatorCage.getAnimalsCounter() < 1) {
+            ExtensibleCage<?> cage = chooseCage();
+            if (cage == null)
+                return;
+            if (cage.getAnimalsCounter() < 1) {
                 System.out.println("Cage is empty");
                 return;
             } else {
-                System.out.println("Enter the animal number from 1 to " + predatorCage.getAnimalsCounter() + " or 0 to return");
+                System.out.println("Enter the animal number from 1 to " + cage.getAnimalsCounter() + " or 0 to return");
                 int num = scan.nextInt();
                 scan.nextLine();
                 if (num == 0)
-                    return;
-                else if (num > 0 && num <= predatorCage.getAnimalsCounter()) {
-                    System.out.println(predatorCage.getAnimals().get(num - 1).toString() +
-                            " have new fill is " + predatorCage.getAnimals().get(num - 1).feed(50));
-                    return;
+                    continue;
+                    //return;
+                else if (num > 0 && num <= cage.getAnimalsCounter()) {
+                    System.out.println(cage.getAnimals().get(num - 1).toString() +
+                            " have new fill is " + cage.getAnimals().get(num - 1).feed(50));
+                    continue;
+                    //return;
                 } else
                     System.out.println("Wrong number cage");
             }
         }
+    }
+
+    public void addAnimalInCage() {
+        Animal animal = createAnimal();
+        if (animal != null) {
+            if (animal instanceof Mammals) {
+                if (animal instanceof Herbivore && Math.random() >= 0.5) {
+                    herbivoreCage.addAnimal((Herbivore) animal);
+                } else mammalCage.addAnimal((Mammals) animal);
+            }
+            else if (animal instanceof Bird)
+                birdCage.addAnimal((Bird) animal);
+        }
+        animal.getCage().checkHuntCondition(animal);
     }
 
     public Animal createAnimal() {
@@ -152,6 +188,7 @@ public class Main implements Animal.IAnimalDeadListener {
                     "1 - Add new Cat\n" +
                     "2 - Add new Wolf\n" +
                     "3 - Add new Raven\n" +
+                    "4 - Add new Rabbit\n" +
                     "0 - Back");
             String num = scan.nextLine();
             switch (num) {
@@ -167,6 +204,10 @@ public class Main implements Animal.IAnimalDeadListener {
                     animal = Raven.createRaven();
                     animal.setAnimalDeadListener(this);
                     return animal;
+                case "4":
+                    animal = Rabbit.createRabbit();
+                    animal.setAnimalDeadListener(this);
+                    return animal;
                 case "0":
                     return null;
                 default:
@@ -176,34 +217,65 @@ public class Main implements Animal.IAnimalDeadListener {
         }
     }
 
-    public void removeAnimal() {
+    public ExtensibleCage<?> chooseCage() {
         while (true) {
-            System.out.println("Who do you want to remove?");
-            System.out.println("Enter the animal number from 1 to " + predatorCage.getAnimalsCounter() + " or 0 to return");
-            int num = scan.nextInt();
-            scan.nextLine();
-            if (num > 0 && predatorCage.removeAnimal(num - 1)) {
-                System.out.println("Animal removed");
-                return;
-            } else if (num == 0) {
-                return;
-            } else
-                System.out.println("Wrong number cage");
-        }
-    }
-
-    private void removeAnimal(Animal animal) {
-        for (int i = 0; i < predatorCage.getAnimalsCounter(); i++) {
-            if (predatorCage.getAnimals().get(i).equals(animal)) {
-                predatorCage.removeAnimal(i);
-                return;
+            System.out.println("Enter the number of cage:\n" +
+                    "1 - Cage of mammals\n" +
+                    "2 - Cage of birds\n" +
+                    "3 - Cage of herbivores\n" +
+                    "0 - back");
+            String num = scan.nextLine();
+            switch (num) {
+                case "1":
+                    return mammalCage;
+                case "2":
+                    return birdCage;
+                case "3":
+                    return herbivoreCage;
+                case "0":
+                    return null;
+                default:
+                    System.out.println("Wrong number of cage");
             }
         }
     }
 
+    private void removeAnimal() {
+        while (true) {
+            ExtensibleCage<?> cage = chooseCage();
+            if (cage == null)
+                return;
+            if (cage.getAnimalsCounter() < 1) {
+                System.out.println("Cage is empty");
+                return;
+            }
+            System.out.println("Enter the animal number from 1 to " + cage.getAnimalsCounter() + " or 0 to return");
+            int num = scan.nextInt();
+            scan.nextLine();
+            if (num > 0 && cage.removeAnimal(num - 1)) {
+                System.out.println("Animal removed");
+                //return;
+                continue;
+            } else if (num == 0) {
+                //return;
+                continue;
+            } else
+                System.out.println("Wrong number of animal");
+        }
+    }
+
+    private void removeAnimal(Animal animal) {
+        for (int i = 0; i < animal.getCage().getAnimalsCounter(); i++) {
+            if (animal.getCage().getAnimals().get(i).equals(animal)) {
+                animal.getCage().removeAnimal(i);
+                return;
+            }
+        }
+        System.out.println("There is no the animal in his cage");
+    }
+
     @Override
     public void onAnimalDead(Animal animal) {
-        System.out.println(animal.toString() + " is dead. Why?");
         removeAnimal(animal);
     }
 }
