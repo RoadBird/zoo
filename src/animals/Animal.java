@@ -21,7 +21,7 @@ public abstract class Animal implements Soundable, Jumpable {
     public Animal(double size, String nickName) {
         setSize(size);
         setNickName(nickName);
-        setFill(120);
+        setFill(125);
         createdAt = System.currentTimeMillis();
         isAlive = true;
     }

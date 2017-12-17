@@ -184,7 +184,7 @@ public class Main implements Animal.IAnimalDeadListener {
     public Animal createAnimal() {
         Animal animal;
         while (true) {
-            System.out.println("Who do you want to create?\n" +
+            System.out.println("Who do you want to create ?\n" +
                     "1 - Add new Cat\n" +
                     "2 - Add new Wolf\n" +
                     "3 - Add new Raven\n" +
