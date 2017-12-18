@@ -22,6 +22,7 @@ public class Raven extends Bird {
         System.out.println("Enter size of the new Raven");
         double size = Main.scan.nextDouble();
         Main.scan.nextLine();
+        if(size < 0) size = 42;
         System.out.println("And his Name, please");
         return new Raven(size, Main.scan.nextLine());
     }

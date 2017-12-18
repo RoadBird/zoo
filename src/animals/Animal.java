@@ -1,10 +1,7 @@
 package animals;
 
-import equipments.ExtensibleCage;
 import interfases.Jumpable;
 import interfases.Soundable;
-
-import javax.naming.ldap.ExtendedRequest;
 
 
 public abstract class Animal implements Soundable, Jumpable {
@@ -16,7 +13,6 @@ public abstract class Animal implements Soundable, Jumpable {
     protected final long createdAt;
     private long lastFeedTime;
     private boolean isAlive;
-    private ExtensibleCage<?> cage;
 
     public Animal(double size, String nickName) {
         setSize(size);
@@ -53,12 +49,10 @@ public abstract class Animal implements Soundable, Jumpable {
 
     public double getFill() {
         double timeSec = (System.currentTimeMillis() - lastFeedTime) / 1000;
-        setFill(fill - timeSec);
-        if (fill <= 0) {
-            isAlive = false;
-            if(animalDeadListener != null) animalDeadListener.onAnimalDead(this);
+        if (fill - timeSec <= 0) {
+            die();
         }
-        return fill;
+        return fill - timeSec;
     }
 
     private void setFill(double fill) {
@@ -70,14 +64,6 @@ public abstract class Animal implements Soundable, Jumpable {
         return isAlive;
     }
 
-    public ExtensibleCage<?> getCage() {
-        return cage;
-    }
-
-    public void setCage(ExtensibleCage<?> cage) {
-        this.cage = cage;
-    }
-
     public void setAnimalDeadListener(IAnimalDeadListener animalDeadListener) {
         this.animalDeadListener = animalDeadListener;
     }
@@ -87,6 +73,11 @@ public abstract class Animal implements Soundable, Jumpable {
         if (temp > 0)
             setFill(temp + val);
         return getFill();
+    }
+
+    protected void die(){
+        isAlive = false;
+        if(animalDeadListener != null) animalDeadListener.onAnimalDead(this);
     }
 
     public interface IAnimalDeadListener {

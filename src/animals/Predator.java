@@ -16,7 +16,7 @@ public abstract class Predator extends Land {
     }
 
     public void consume(Herbivore prey){
-        this.feed(prey.getSize());
+        this.feed(prey.getSize() * 10);
         System.out.println(this.toString() + " ate " + prey.toString());
         prey.onConsumed();
     }

@@ -23,6 +23,7 @@ public class Rabbit extends Herbivore{
         System.out.println("Enter size of the new Rabbit");
         double size = Main.scan.nextDouble();
         Main.scan.nextLine();
+        if(size < 0) size = 42;
         System.out.println("And his Name, please");
         return new Rabbit(size, Main.scan.nextLine());
     }

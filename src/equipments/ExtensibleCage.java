@@ -5,14 +5,15 @@ import animals.Herbivore;
 import animals.Predator;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-public class ExtensibleCage<T extends Animal> {
+public class ExtensibleCage<T extends Animal> implements Animal.IAnimalDeadListener {
     private List<T> listCage = new ArrayList<>();
 
     public int addAnimal(T animal) {
         listCage.add(animal);
-        animal.setCage(this);
+        animal.setAnimalDeadListener(this);
         return listCage.size();
     }
 
@@ -32,18 +33,43 @@ public class ExtensibleCage<T extends Animal> {
 
     public void checkHuntCondition(Animal animal) {
         if (animal instanceof Herbivore) {
-            Animal other;
             Predator hunter = null;
             double minFill = Double.MAX_VALUE;
-            for (int i = 0; i < animal.getCage().getAnimalsCounter(); i++) {
-                other = animal.getCage().getAnimals().get(i);
-                double otherFill = other.getFill();
-                if (otherFill > 0 && other instanceof Predator && otherFill < minFill) {
-                    hunter = (Predator) other;
+            Iterator iterator = getAnimals().iterator();
+            while (iterator.hasNext()) {
+                Animal t = (Animal) iterator.next();
+                double otherFill = t.getFill();
+                if (otherFill > 0 && t instanceof Predator && otherFill < minFill) {
+                    hunter = (Predator) t;
                     minFill = otherFill;
-                } else if (otherFill <= 0) i--;
+                } else if (otherFill <= 0) iterator.remove();
             }
-            if(hunter != null) hunter.consume((Herbivore) animal);
+            if (hunter != null) hunter.consume((Herbivore) animal);
+        } else if (animal instanceof Predator) {
+
+            Iterator iterator = getAnimals().iterator();
+            while (iterator.hasNext()){
+                Animal secont = (Animal) iterator.next();
+                if(secont instanceof Herbivore) {
+                    iterator.remove();
+                    ((Predator) animal).consume((Herbivore) secont);
+                }
+            }
+        }
+    }
+
+
+
+    @Override
+    //Нехило так должно жрать память,
+    // если удаление произошло через итератор перед вызовом метода
+    public void onAnimalDead(Animal animal) {
+        for (int i = 0; i < getAnimalsCounter(); i++) {
+            if (getAnimals().get(i).equals(animal)) {
+                System.out.println(getAnimals().get(i).toString() + " is dead");
+                removeAnimal(i);
+                return;
+            }
         }
     }
 }
