@@ -160,27 +160,19 @@ public class Main {
 
     public void addAnimalInCage() {
 
-        ExtensibleCage<Mammals> mammalsExtensibleCagec = (ExtensibleCage<Mammals>) cages.get("Mammals");
-        ExtensibleCage<Bird> birdExtensibleCagec = (ExtensibleCage<Bird>) cages.get("Bird");
-        ExtensibleCage<Herbivore> herbivoreExtensibleCagec = (ExtensibleCage<Herbivore>) cages.get("Herbivore");
-
-
         Animal animal = createAnimal();
         if (animal != null) {
             if (animal instanceof Mammals) {
                 if (animal instanceof Herbivore && Math.random() >= 0.5) {
-                    //cages.get("Herbivore").addAnimal(animal);
-                    herbivoreExtensibleCagec.addAnimal((Herbivore) animal);
-                    cages.get("Herbivore").checkHuntCondition(animal);
+                    cages.get(Herbivore.class.getSimpleName()).addAnimal(animal);
+                    //cages.get("Herbivore").checkHuntCondition(animal);
                 } else {
-                    //cages.get("Mammals").addAnimal(animal);
-                    mammalsExtensibleCagec.addAnimal((Mammals) animal);
-                    cages.get("Mammals").checkHuntCondition(animal);
+                    cages.get(Mammals.class.getSimpleName()).addAnimal(animal);
+                    cages.get(Mammals.class.getSimpleName()).checkHuntCondition(animal);
                 }
             } else if (animal instanceof Bird) {
-                //cages.get("Bird").addAnimal(animal);
-                birdExtensibleCagec.addAnimal((Bird) animal);
-                cages.get("Bird").checkHuntCondition(animal);
+                cages.get(Bird.class.getSimpleName()).addAnimal(animal);
+                //cages.get("Bird").checkHuntCondition(animal);
             }
         } else throw new RuntimeException("");
     }
@@ -227,11 +219,11 @@ public class Main {
             String num = scan.nextLine();
             switch (num) {
                 case "1":
-                    return cages.get("Mammals");
+                    return cages.get(Mammals.class.getSimpleName());
                 case "2":
-                    return cages.get("Bird");
+                    return cages.get(Bird.class.getSimpleName());
                 case "3":
-                    return cages.get("Herbivore");
+                    return cages.get(Herbivore.class.getSimpleName());
                 case "0":
                     return null;
                 default:

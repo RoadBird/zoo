@@ -11,8 +11,8 @@ import java.util.List;
 public class ExtensibleCage<T extends Animal> implements Animal.IAnimalDeadListener {
     private List<T> listCage = new ArrayList<>();
 
-    public int addAnimal(T animal) {
-        listCage.add(animal);
+    public int addAnimal(Animal animal) {
+        listCage.add((T)animal);
         animal.setAnimalDeadListener(this);
         return listCage.size();
     }
