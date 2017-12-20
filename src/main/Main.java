@@ -11,11 +11,18 @@ import java.util.Scanner;
 public class Main {
     public static final Scanner scan = new Scanner(System.in);
     private Map<String, ExtensibleCage<? extends Animal>> cages = new HashMap<>();
+    private Map<Integer, ExtensibleCage<? extends Animal>> cagesByNumber = new HashMap<>();
+
     public Main() {
         System.out.println("Yep, Hello!");
-        cages.put(Mammals.class.getSimpleName(), new ExtensibleCage<Mammals>());
-        cages.put(Bird.class.getSimpleName(), new ExtensibleCage<Bird>());
-        cages.put(Herbivore.class.getSimpleName(), new ExtensibleCage<Herbivore>());
+        cages.put(Mammals.class.getSimpleName(), new ExtensibleCage<Mammals>(Mammals.class.getSimpleName()));
+        cages.put(Bird.class.getSimpleName(), new ExtensibleCage<Bird>(Bird.class.getSimpleName()));
+        cages.put(Herbivore.class.getSimpleName(), new ExtensibleCage<Herbivore>(Herbivore.class.getSimpleName()));
+
+        int i = 0;
+        for (ExtensibleCage<? extends Animal> cage : cages.values()) {
+            cagesByNumber.put(++i, cage);
+        }
 
         boolean exit = false;
         do {
@@ -67,7 +74,7 @@ public class Main {
     public void showAnimalInfo() {
         StringBuilder stringBuilder = new StringBuilder("\nWho do we have:\n");
 
-        for(String cage : cages.keySet()){
+        for (String cage : cages.keySet()) {
             stringBuilder.append("\tCage of ").append(cage).append(":\n");
             if (cages.get(cage).getAnimalsCounter() == 0) {
                 stringBuilder.append("Cage is empty\n");
@@ -146,14 +153,12 @@ public class Main {
                 scan.nextLine();
                 if (num == 0)
                     continue;
-                    //return;
                 else if (num > 0 && num <= cage.getAnimalsCounter()) {
                     System.out.println(cage.getAnimals().get(num - 1).toString() +
                             " have new fill is " + cage.getAnimals().get(num - 1).feed(50));
                     continue;
-                    //return;
                 } else
-                    System.out.println("Wrong number cage");
+                    System.out.println("Wrong number of animal");
             }
         }
     }
@@ -165,14 +170,12 @@ public class Main {
             if (animal instanceof Mammals) {
                 if (animal instanceof Herbivore && Math.random() >= 0.5) {
                     cages.get(Herbivore.class.getSimpleName()).addAnimal(animal);
-                    //cages.get("Herbivore").checkHuntCondition(animal);
                 } else {
                     cages.get(Mammals.class.getSimpleName()).addAnimal(animal);
                     cages.get(Mammals.class.getSimpleName()).checkHuntCondition(animal);
                 }
             } else if (animal instanceof Bird) {
                 cages.get(Bird.class.getSimpleName()).addAnimal(animal);
-                //cages.get("Bird").checkHuntCondition(animal);
             }
         } else throw new RuntimeException("");
     }
@@ -210,31 +213,17 @@ public class Main {
     }
 
     public ExtensibleCage<? extends Animal> chooseCage() {
-        while (true) {
-            System.out.println("Enter the number of cage:\n" +
-                    "1 - Cage of mammals\n" +
-                    "2 - Cage of birds\n" +
-                    "3 - Cage of herbivores\n" +
-                    "0 - back");
-            String num = scan.nextLine();
-            switch (num) {
-                case "1":
-                    return cages.get(Mammals.class.getSimpleName());
-                case "2":
-                    return cages.get(Bird.class.getSimpleName());
-                case "3":
-                    return cages.get(Herbivore.class.getSimpleName());
-                case "0":
-                    return null;
-                default:
-                    System.out.println("Wrong number of cage");
-            }
+        System.out.println("Enter the number of cage:\n");
+        for (int n : cagesByNumber.keySet()) {
+            System.out.println(n + " - Cage of " + cagesByNumber.get(n).getType());
         }
+        System.out.println("... or something else to return");
+        return cagesByNumber.get(Integer.decode(scan.nextLine()));
     }
 
     private void removeAnimal() {
         while (true) {
-            ExtensibleCage<?> cage = chooseCage();
+            ExtensibleCage<? extends Animal> cage = chooseCage();
             if (cage == null)
                 return;
             if (cage.getAnimalsCounter() < 1) {
@@ -246,13 +235,10 @@ public class Main {
             scan.nextLine();
             if (num > 0 && cage.removeAnimal(num - 1)) {
                 System.out.println("Animal removed");
-                //return;
             } else if (num == 0) {
-                //return;
             } else
                 System.out.println("Wrong number of animal");
         }
     }
-
 
 }

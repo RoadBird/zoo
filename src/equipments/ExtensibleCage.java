@@ -10,6 +10,11 @@ import java.util.List;
 
 public class ExtensibleCage<T extends Animal> implements Animal.IAnimalDeadListener {
     private List<T> listCage = new ArrayList<>();
+    private String type;
+
+    public ExtensibleCage(String type){
+        this.type = type;
+    }
 
     public int addAnimal(Animal animal) {
         listCage.add((T)animal);
@@ -58,7 +63,9 @@ public class ExtensibleCage<T extends Animal> implements Animal.IAnimalDeadListe
         }
     }
 
-
+    public String getType(){
+        return type;
+    }
 
     @Override
     //Нехило так должно жрать память,
