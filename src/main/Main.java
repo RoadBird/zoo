@@ -144,7 +144,6 @@ public class Main {
     }
 
     public void addAnimalInCage() {
-
         Animal animal = createAnimal();
         if (animal != null) {
             if (animal instanceof Mammals) {
@@ -220,5 +219,4 @@ public class Main {
                 System.out.println("Wrong number of animal");
         }
     }
-
 }

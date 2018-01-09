@@ -3,8 +3,7 @@ package animals;
 import interfases.Jumpable;
 import interfases.Soundable;
 
-
-public abstract class Animal implements Soundable, Jumpable, Comparable<Animal>{
+public abstract class Animal implements Soundable, Jumpable, Comparable<Animal> {
     private IAnimalDeadListener animalDeadListener;
     private double size;
     private String nickName;
@@ -75,17 +74,16 @@ public abstract class Animal implements Soundable, Jumpable, Comparable<Animal>{
         return getFill();
     }
 
-    protected void die(){
+    protected void die() {
         isAlive = false;
-        if(animalDeadListener != null) animalDeadListener.onAnimalDead(this);
+        if (animalDeadListener != null) animalDeadListener.onAnimalDead(this);
     }
 
     public interface IAnimalDeadListener {
         void onAnimalDead(Animal animal);
     }
 
-    public int compareTo(Animal other){
+    public int compareTo(Animal other) {
         return (int) Math.ceil(this.getSize() - other.getSize());
     }
-
 }
