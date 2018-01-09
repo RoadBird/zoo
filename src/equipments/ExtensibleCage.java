@@ -4,20 +4,18 @@ import animals.Animal;
 import animals.Herbivore;
 import animals.Predator;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 
 public class ExtensibleCage<T extends Animal> implements Animal.IAnimalDeadListener {
     private List<T> listCage = new ArrayList<>();
     private String type;
 
-    public ExtensibleCage(String type){
+    public ExtensibleCage(String type) {
         this.type = type;
     }
 
     public int addAnimal(Animal animal) {
-        listCage.add((T)animal);
+        listCage.add((T) animal);
         animal.setAnimalDeadListener(this);
         return listCage.size();
     }
@@ -53,9 +51,9 @@ public class ExtensibleCage<T extends Animal> implements Animal.IAnimalDeadListe
         } else if (animal instanceof Predator) {
 
             Iterator iterator = getAnimals().iterator();
-            while (iterator.hasNext()){
+            while (iterator.hasNext()) {
                 Animal secont = (Animal) iterator.next();
-                if(secont instanceof Herbivore) {
+                if (secont instanceof Herbivore) {
                     iterator.remove();
                     ((Predator) animal).consume((Herbivore) secont);
                 }
@@ -63,7 +61,7 @@ public class ExtensibleCage<T extends Animal> implements Animal.IAnimalDeadListe
         }
     }
 
-    public String getType(){
+    public String getType() {
         return type;
     }
 
@@ -77,6 +75,31 @@ public class ExtensibleCage<T extends Animal> implements Animal.IAnimalDeadListe
                 removeAnimal(i);
                 return;
             }
+        }
+    }
+
+    public String getCageInfo() {
+        sortAnimals();
+        StringBuilder stringBuilder = new StringBuilder();
+        Iterator<? extends Animal> it = listCage.iterator();
+        while (it.hasNext()) {
+            Animal animal = it.next();
+            if (animal.getNickName() == null || animal.getNickName().length() == 0)
+                it.remove();
+            else stringBuilder.append(animal.toString());
+        }
+        return stringBuilder.toString();
+    }
+
+    public void sortAnimals(){
+        Collections.sort(listCage);
+    }
+
+    private static class SizeComparator implements Comparator<Animal> {
+
+        @Override
+        public int compare(Animal o1, Animal o2) {
+            return (int) Math.ceil(o1.getSize() - o2.getSize());
         }
     }
 }

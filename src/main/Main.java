@@ -73,35 +73,15 @@ public class Main {
 
     public void showAnimalInfo() {
         StringBuilder stringBuilder = new StringBuilder("\nWho do we have:\n");
-
         for (String cage : cages.keySet()) {
             stringBuilder.append("\tCage of ").append(cage).append(":\n");
             if (cages.get(cage).getAnimalsCounter() == 0) {
                 stringBuilder.append("Cage is empty\n");
             } else {
-                stringBuilder.append(animalInfo(cages.get(cage)));
+                stringBuilder.append(cages.get(cage).getCageInfo()).append("\n");
             }
         }
         System.out.println(stringBuilder.toString());
-    }
-
-    public String animalInfo(ExtensibleCage<?> someCage) {
-        StringBuilder stringBuilder = new StringBuilder();
-        Animal animal;
-        double check;
-        for (int i = 0; i < someCage.getAnimalsCounter(); i++) {
-            animal = someCage.getAnimals().get(i);
-            if ((check = animal.getFill()) > 0) {
-                stringBuilder.append("Animal ").append(animal.getType()).append(": ");
-                stringBuilder.append(" name - ").append(animal.getNickName()).append(", ");
-                stringBuilder.append("size - ").append(animal.getSize()).append(", ");
-                stringBuilder.append("fill - ").append(check).append(".\n");
-            } else {
-                stringBuilder.append(animal.toString()).append(" is dead. Why?\n");
-                i--;
-            }
-        }
-        return stringBuilder.toString();
     }
 
     public void makeSound() {

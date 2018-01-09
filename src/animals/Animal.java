@@ -4,7 +4,7 @@ import interfases.Jumpable;
 import interfases.Soundable;
 
 
-public abstract class Animal implements Soundable, Jumpable {
+public abstract class Animal implements Soundable, Jumpable, Comparable<Animal>{
     private IAnimalDeadListener animalDeadListener;
     private double size;
     private String nickName;
@@ -82,6 +82,10 @@ public abstract class Animal implements Soundable, Jumpable {
 
     public interface IAnimalDeadListener {
         void onAnimalDead(Animal animal);
+    }
+
+    public int compareTo(Animal other){
+        return (int) Math.ceil(this.getSize() - other.getSize());
     }
 
 }
