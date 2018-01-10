@@ -128,14 +128,12 @@ public class Main {
                 System.out.println("Cage is empty");
                 return;
             } else {
-                System.out.println("Enter the animal number from 1 to " + cage.getAnimalsCounter() + " or 0 to return");
-                int num = scan.nextInt();
-                scan.nextLine();
+                double num = Input.megaInputNumber("Enter the animal number from 1 to " + cage.getAnimalsCounter() + " or 0 to return");
                 if (num == 0)
                     continue;
                 else if (num > 0 && num <= cage.getAnimalsCounter()) {
-                    System.out.println(cage.getAnimals().get(num - 1).toString() +
-                            " have new fill is " + cage.getAnimals().get(num - 1).feed(50));
+                    System.out.println(cage.getAnimals().get((int) num - 1).toString() +
+                            " have new fill is " + cage.getAnimals().get((int) num - 1).feed(50));
                     continue;
                 } else
                     System.out.println("Wrong number of animal");
@@ -156,7 +154,7 @@ public class Main {
             } else if (animal instanceof Bird) {
                 cages.get(Bird.class.getSimpleName()).addAnimal(animal);
             }
-        } else throw new RuntimeException("");
+        }
     }
 
     public Animal createAnimal() {
@@ -209,10 +207,8 @@ public class Main {
                 System.out.println("Cage is empty");
                 return;
             }
-            System.out.println("Enter the animal number from 1 to " + cage.getAnimalsCounter() + " or 0 to return");
-            int num = scan.nextInt();
-            scan.nextLine();
-            if (num > 0 && cage.removeAnimal(num - 1)) {
+            double num = Input.megaInputNumber("Enter the animal number from 1 to " + cage.getAnimalsCounter() + " or 0 to return");
+            if (num > 0 && cage.removeAnimal((int) num - 1)) {
                 System.out.println("Animal removed");
             } else if (num == 0) {
             } else

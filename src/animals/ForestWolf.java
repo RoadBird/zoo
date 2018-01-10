@@ -1,5 +1,6 @@
 package animals;
 
+import main.Input;
 import main.Main;
 
 
@@ -20,9 +21,7 @@ public class ForestWolf extends Canine {
     }
 
     public static ForestWolf createWolf() {
-        System.out.println("Enter size of the new Wolf");
-        double size = Main.scan.nextDouble();
-        Main.scan.nextLine();
+        double size = Input.megaInputNumber("Enter size of the new Wolf");
         if(size < 0) size = 42;
         System.out.println("And his Name, please");
         return new ForestWolf(size, Main.scan.nextLine());

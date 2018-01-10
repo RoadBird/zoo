@@ -1,5 +1,6 @@
 package animals;
 
+import main.Input;
 import main.Main;
 
 public class Raven extends Bird {
@@ -20,8 +21,7 @@ public class Raven extends Bird {
 
     public static Raven createRaven() {
         System.out.println("Enter size of the new Raven");
-        double size = Main.scan.nextDouble();
-        Main.scan.nextLine();
+        double size = Input.megaInputNumber("Enter size of the new Raven");
         if(size < 0) size = 42;
         System.out.println("And his Name, please");
         return new Raven(size, Main.scan.nextLine());

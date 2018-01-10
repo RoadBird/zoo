@@ -1,6 +1,8 @@
 package animals;
 
 
+import error.AnimalCreationException;
+import main.Input;
 import main.Main;
 
 public final class HouseCat extends Feline{
@@ -31,11 +33,12 @@ public final class HouseCat extends Feline{
     }
 
     public static HouseCat createCat() {
-        System.out.println("Enter size of the new Cat");
-        double size = Main.scan.nextDouble();
-        Main.scan.nextLine();
+        double size = Input.megaInputNumber("Enter size of the new Cat");
         if(size < 0) size = 42;
         System.out.println("And his Name, please");
-        return new HouseCat(size, Main.scan.nextLine());
+        String name = Main.scan.nextLine();
+        if(name.length() == 0)
+            throw new AnimalCreationException();
+        return new HouseCat(size, name);
     }
 }

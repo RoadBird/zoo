@@ -95,11 +95,11 @@ public class ExtensibleCage<T extends Animal> implements Animal.IAnimalDeadListe
         Collections.sort(listCage);
     }
 
-    private static class SizeComparator implements Comparator<Animal> {
-
-        @Override
-        public int compare(Animal o1, Animal o2) {
-            return (int) Math.ceil(o1.getSize() - o2.getSize());
-        }
-    }
+//    private static class SizeComparator implements Comparator<Animal> {
+//
+//        @Override
+//        public int compare(Animal o1, Animal o2) {
+//            return (int) Math.ceil(o1.getSize() - o2.getSize());
+//        }
+//    }
 }
