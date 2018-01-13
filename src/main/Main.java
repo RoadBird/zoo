@@ -2,6 +2,7 @@ package main;
 
 import animals.*;
 import equipments.ExtensibleCage;
+import error.AnimalCreationException;
 import interfases.Soundable;
 
 import java.util.HashMap;
@@ -142,7 +143,12 @@ public class Main {
     }
 
     public void addAnimalInCage() {
-        Animal animal = createAnimal();
+        Animal animal = null;
+        try {
+            animal = createAnimal();
+        } catch (AnimalCreationException e){
+            System.out.println(e);
+        }
         if (animal != null) {
             if (animal instanceof Mammals) {
                 if (animal instanceof Herbivore && Math.random() >= 0.5) {
@@ -157,7 +163,7 @@ public class Main {
         }
     }
 
-    public Animal createAnimal() {
+    public Animal createAnimal() throws AnimalCreationException {
         Animal animal;
         while (true) {
             System.out.println("Who do you want to create ?\n" +

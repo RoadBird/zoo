@@ -32,9 +32,9 @@ public final class HouseCat extends Feline{
         return getSize() * 2.14;
     }
 
-    public static HouseCat createCat() {
+    public static HouseCat createCat() throws AnimalCreationException {
         double size = Input.megaInputNumber("Enter size of the new Cat");
-        if(size < 0) size = 42;
+        if(size <= 0) size = 42;
         System.out.println("And his Name, please");
         String name = Main.scan.nextLine();
         if(name.length() == 0)
