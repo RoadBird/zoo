@@ -1,6 +1,6 @@
 package error;
 
-public class AnimalCreationException extends RuntimeException {
+public class AnimalCreationException extends Exception {
     public AnimalCreationException() {
         super("Animal cannot be created");
     }

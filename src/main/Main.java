@@ -27,7 +27,7 @@ public class Main {
 
         boolean exit = false;
         do {
-            System.out.println("What do you want??\n" +
+            System.out.println("What do you want???\n" +
                     "1 - Look at all in the Cage\n" +
                     "2 - Feed everyone\n" +
                     "3 - Add new Animal\n" +
@@ -147,7 +147,7 @@ public class Main {
         try {
             animal = createAnimal();
         } catch (AnimalCreationException e){
-            System.out.println(e);
+            System.out.println(e.getMessage());
         }
         if (animal != null) {
             if (animal instanceof Mammals) {
