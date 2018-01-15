@@ -1,6 +1,6 @@
 package animals;
 
-import main.Input;
+import input.Input;
 import main.Main;
 
 

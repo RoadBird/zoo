@@ -3,6 +3,7 @@ package main;
 import animals.*;
 import equipments.ExtensibleCage;
 import error.AnimalCreationException;
+import input.Input;
 import interfases.Soundable;
 
 import java.util.HashMap;
@@ -68,7 +69,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        new Main();
+        //new Main();
+        Input.importFromFile();
         scan.close();
     }
 

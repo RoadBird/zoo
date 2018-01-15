@@ -4,7 +4,7 @@ package animals;
 import error.AnimalCreationException;
 import error.AnimalInvalidNameExcepion;
 import error.AnimalInvalidSizeException;
-import main.Input;
+import input.Input;
 import main.Main;
 
 public final class HouseCat extends Feline{
