@@ -1,10 +1,10 @@
 package input;
 
-import animals.Animal;
 import main.Main;
 
-import java.io.*;
-import java.util.List;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Input {
     public static double megaInputNumber(String message){
@@ -36,25 +36,5 @@ public class Input {
             }
         }
         return sb.toString();
-    }
-    public static List<Animal> importFromFile(){
-        File file = new File("animals.csv");
-        if(!file.exists()){
-            System.out.println("File not exists");
-        } else System.out.println("File OK");
-        try {
-            BufferedReader bf = new BufferedReader(new FileReader(file));
-            StringBuilder sb = new StringBuilder();
-            int temp = 0;
-            while((temp = bf.read()) != -1){
-                sb.append((char)temp);
-            }
-            System.out.println(sb.toString());
-        } catch (FileNotFoundException e) {
-            System.out.println(e);
-        } catch (IOException e){
-            System.out.println(e);
-        }
-        return null;
     }
 }
