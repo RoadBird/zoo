@@ -11,6 +11,11 @@ public final class HouseCat extends Feline{
     private String breed;
     private final String SOUND = "Meow!";
 
+    public HouseCat(){
+        super();
+        type = "Cat";
+    }
+
     public HouseCat(double size, String nickNames) {
         super(size, nickNames);
         type = "Cat";

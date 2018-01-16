@@ -1,6 +1,7 @@
 package input;
 
 import animals.*;
+import error.AnimalCreationException;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -8,47 +9,59 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class FileImporter {
-    public static List<Animal> importFromFile(String fileName) {
+    public static List<Animal> importFromCSVFile(String fileName) {
         File file = new File(fileName);
         if (!file.exists()) {
             System.out.println("File not exists");
             return null;
         } else System.out.println("File OK");
-        List<Animal> list = new LinkedList<>();
-        List<String> listValue = getValueFromCSV(file);
+        List<String[]> listValue = getValueFromCSV(file);
         if(listValue == null){
             System.out.println("Error of read file");
             return null;
         }
-        for(int i = 0; i < listValue.size()/3; i+=3){
-            if(listValue.get(i).equals("Cat"))
-                list.add(new HouseCat(Double.parseDouble(listValue.get(i+1)), listValue.get(i+2)));
-            else if (listValue.get(i).equals("Wolf"))
-                list.add(new ForestWolf(Double.parseDouble(listValue.get(i+1)), listValue.get(i+2)));
-            else if (listValue.get(i).equals("Rabbit"))
-                list.add(new Rabbit(Double.parseDouble(listValue.get(i+1)), listValue.get(i+2)));
-            else if (listValue.get(i).equals("Raven"))
-                list.add(new Raven(Double.parseDouble(listValue.get(i+1)), listValue.get(i+2)));
-            else System.out.println("Error of animal's type");
+        List<Animal> list = new LinkedList<>();
+        Animal animal;
+        for(String[] s : listValue){
+            try {
+                animal = AnimalsCollection.createAnimal(s[0]);
+                animal.setNickName(s[1]);
+                animal.setSize(Double.parseDouble(s[2]));
+                list.add(animal);
+            } catch (AnimalCreationException e) {
+                e.printStackTrace();
+            }
         }
         return list;
     }
 
-    private static List<String> getValueFromCSV(File file) {
+    private static List<String[]> getValueFromCSV(File file) {
+        BufferedReader bf = null;
         try {
-            BufferedReader bf = new BufferedReader(new FileReader(file));
+            bf = new BufferedReader(new FileReader(file));
             StringBuilder sb = new StringBuilder();
-            List<String> list = new ArrayList<>();
-            int temp;
-            while ((temp = bf.read()) != -1) {
-                while (temp != ',')
+            List<String[]> list = new ArrayList<>();
+            int temp = bf.read();
+            while (temp != -1) {
+                while (temp != 10 && temp != -1) {
                     sb.append((char) temp);
-                list.add(sb.toString());
+                    temp = bf.read();
+                }
+                list.add(sb.toString().split(","));
+                sb.setLength(0);
+                temp = bf.read();
             }
+            return list;
         } catch (FileNotFoundException e) {
             System.out.println(e);
         } catch (IOException e) {
             System.out.println(e);
+        } finally {
+            try {
+                bf.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return null;
     }

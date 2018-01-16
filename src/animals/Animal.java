@@ -13,6 +13,12 @@ public abstract class Animal implements Soundable, Jumpable, Comparable<Animal> 
     private long lastFeedTime;
     private boolean isAlive;
 
+    protected Animal() {
+        setFill(125);
+        createdAt = System.currentTimeMillis();
+        isAlive = true;
+    }
+
     public Animal(double size, String nickName) {
         setSize(size);
         setNickName(nickName);

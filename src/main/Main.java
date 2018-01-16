@@ -3,10 +3,12 @@ package main;
 import animals.*;
 import equipments.ExtensibleCage;
 import error.AnimalCreationException;
+import input.FileImporter;
 import input.Input;
 import interfases.Soundable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -69,7 +71,10 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        new Main();
+       // new Main();
+        List<Animal> list = FileImporter.importFromCSVFile("animals.csv");
+        for(Animal a : list)
+            System.out.println(a.toString());
         scan.close();
     }
 

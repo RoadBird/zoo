@@ -3,6 +3,10 @@ package animals;
 public abstract class Predator extends Land {
     private boolean isScavenger;
 
+    protected Predator() {
+        super();
+    }
+
     public Predator(double size, String nickNames) {
         super(size, nickNames);
     }

@@ -4,6 +4,11 @@ import input.Input;
 import main.Main;
 
 public class Raven extends Bird {
+    public Raven(){
+        super();
+        type = "Raven";
+    }
+
     public Raven(double size, String nickName) {
         super(size, nickName);
         type = "Raven";

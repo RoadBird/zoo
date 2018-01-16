@@ -3,6 +3,10 @@ package animals;
 public abstract class Land extends Mammals {
     private int limbs;
 
+    protected Land() {
+        super();
+    }
+
     public Land(double size, String nickNames) {
         super(size, nickNames);
     }
