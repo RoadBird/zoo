@@ -6,6 +6,7 @@ import error.AnimalCreationException;
 import input.FileImporter;
 import input.Input;
 import interfases.Soundable;
+import io.MyLogger;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,7 @@ public class Main {
                     "4 - Let them jump\n" +
                     "5 - Remove Animal\n" +
                     "6 - Touch the cage\n" +
+                    "7 - Import from file\n" +
                     "0 - Exit");
             String answer = scan.nextLine();
             switch (answer) {
@@ -58,6 +60,11 @@ public class Main {
                 case "6":
                     makeSound();
                     break;
+                case "7":
+                    List<Animal> list = FileImporter.importFromCSVFile("animals.csv");
+                    for (Animal a : list)
+                        System.out.println(a.toString());
+                    break;
                 case "0":
                     System.out.println("Thanks!");
                     exit = true;
@@ -71,10 +78,8 @@ public class Main {
     }
 
     public static void main(String[] args) {
-       // new Main();
-        List<Animal> list = FileImporter.importFromCSVFile("animals.csv");
-        for(Animal a : list)
-            System.out.println(a.toString());
+        // new Main();
+        MyLogger.log("Start");
         scan.close();
     }
 
@@ -152,7 +157,7 @@ public class Main {
         Animal animal = null;
         try {
             animal = createAnimal();
-        } catch (AnimalCreationException e){
+        } catch (AnimalCreationException e) {
             System.out.println(e.getMessage());
         }
         if (animal != null) {
