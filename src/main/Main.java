@@ -8,10 +8,9 @@ import input.Input;
 import interfases.Soundable;
 import io.MyLogger;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.io.File;
+import java.io.IOException;
+import java.util.*;
 
 public class Main {
     public static final Scanner scan = new Scanner(System.in);
@@ -61,9 +60,7 @@ public class Main {
                     makeSound();
                     break;
                 case "7":
-                    List<Animal> list = FileImporter.importFromCSVFile("animals.csv");
-                    for (Animal a : list)
-                        System.out.println(a.toString());
+                    readFromCSV();
                     break;
                 case "0":
                     System.out.println("Thanks!");
@@ -78,7 +75,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        // new Main();
+        new Main();
         MyLogger.log("Start");
         scan.close();
     }
@@ -146,7 +143,6 @@ public class Main {
                 else if (num > 0 && num <= cage.getAnimalsCounter()) {
                     System.out.println(cage.getAnimals().get((int) num - 1).toString() +
                             " have new fill is " + cage.getAnimals().get((int) num - 1).feed(50));
-                    continue;
                 } else
                     System.out.println("Wrong number of animal");
             }
@@ -231,5 +227,62 @@ public class Main {
             } else
                 System.out.println("Wrong number of animal");
         }
+    }
+
+    private void readFromCSV() {
+        System.out.println("Enter the directory for search");
+        String s = scan.nextLine();
+        File file;
+        if (s.equals(""))
+            file = new File(".");
+        else file = new File(s);
+        if (!file.exists() || !file.isDirectory()) {
+            System.out.println("This directory is not found");
+            return;
+        }
+        List<File> listFile = new ArrayList<>();
+        searchCSV(file, listFile);
+        if(listFile.size() < 1){
+            System.out.println("There is not any CSV-file");
+            return;
+        }
+        while (true) {
+            System.out.println("Choose a file");
+            for (int i = 0; i < listFile.size(); i++) {
+                try {
+                    System.out.println(i + " - " + listFile.get(i).getCanonicalPath());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            int ans = (int) Input.megaInputNumber("Enter a number of file");
+            if(ans < 0 || ans > listFile.size()){
+                System.out.println("Wrong number. Please, try again");
+                continue;
+            }else {
+                List<Animal> list;
+                try {
+                    list = FileImporter.importFromCSVFile(listFile.get(ans));
+                    for (Animal a : list)
+                        System.out.println(a.toString());
+                    return;
+                } catch (AnimalCreationException e) {
+                    System.out.println(e.getMessage());
+                    return;
+                }
+            }
+        }
+    }
+
+    private List<File> searchCSV(File file, List listFile) {
+        File[] files = file.listFiles();
+        for (File f : files) {
+            if (f.isDirectory())
+                searchCSV(f, listFile);
+            else if (f.getName().contains(".csv")) {
+                listFile.add(f);
+            }
+        }
+        return listFile;
     }
 }

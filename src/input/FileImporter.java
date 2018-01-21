@@ -9,33 +9,26 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class FileImporter {
-    public static List<Animal> importFromCSVFile(String fileName) {
-        File file = new File(fileName);
+    public static List<Animal> importFromCSVFile(File file) throws AnimalCreationException {
         if (!file.exists()) {
-            System.out.println("File not exists");
-            return null;
-        } else System.out.println("File OK");
-        List<String[]> listValue = getValueFromCSV(file);
-        if(listValue == null){
-            System.out.println("Error of read file");
-            return null;
+            throw new AnimalCreationException("File not exist");
         }
+        List<String[]> listValue = getValueFromCSV(file);
         List<Animal> list = new LinkedList<>();
+        if(listValue.size() == 0){
+            throw new AnimalCreationException("File is empty");
+        }
         Animal animal;
-        for(String[] s : listValue){
-            try {
-                animal = AnimalsCollection.createAnimal(s[0]);
-                animal.setNickName(s[1]);
-                animal.setSize(Double.parseDouble(s[2]));
-                list.add(animal);
-            } catch (AnimalCreationException e) {
-                e.printStackTrace();
-            }
+        for (String[] s : listValue) {
+            animal = AnimalsCollection.createAnimal(s[0]);
+            animal.setNickName(s[1]);
+            animal.setSize(Double.parseDouble(s[2]));
+            list.add(animal);
         }
         return list;
     }
 
-    private static List<String[]> getValueFromCSV(File file) {
+    private static List<String[]> getValueFromCSV(File file) throws AnimalCreationException{
         BufferedReader bf = null;
         try {
             bf = new BufferedReader(new FileReader(file));
@@ -53,9 +46,11 @@ public class FileImporter {
             }
             return list;
         } catch (FileNotFoundException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
+            throw new AnimalCreationException("File not found");
         } catch (IOException e) {
-            System.out.println(e);
+            System.out.println(e.getMessage());
+            throw new AnimalCreationException("Exception of read file");
         } finally {
             try {
                 bf.close();
@@ -63,6 +58,5 @@ public class FileImporter {
                 e.printStackTrace();
             }
         }
-        return null;
     }
 }
