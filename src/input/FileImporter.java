@@ -9,7 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class FileImporter {
-    public static List<Animal> importFromCSVFile(File file) throws AnimalCreationException {
+    public static List<Animal> getAnimalsFromCSVFile(File file) throws AnimalCreationException {
         if (!file.exists()) {
             throw new AnimalCreationException("File not exist");
         }
@@ -58,5 +58,16 @@ public class FileImporter {
                 e.printStackTrace();
             }
         }
+    }
+    public static List<File> searchCSV(File file, List listFile) {
+        File[] files = file.listFiles();
+        for (File f : files) {
+            if (f.isDirectory())
+                searchCSV(f, listFile);
+            else if (f.getName().lastIndexOf(".csv") != -1) {
+                listFile.add(f);
+            }
+        }
+        return listFile;
     }
 }

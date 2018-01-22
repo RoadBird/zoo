@@ -7,6 +7,11 @@ import input.FileImporter;
 import input.Input;
 import interfases.Soundable;
 import io.MyLogger;
+import org.pmw.tinylog.Configurator;
+import org.pmw.tinylog.Level;
+import org.pmw.tinylog.Logger;
+import org.pmw.tinylog.writers.ConsoleWriter;
+import org.pmw.tinylog.writers.FileWriter;
 
 import java.io.File;
 import java.io.IOException;
@@ -75,8 +80,15 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        new Main();
+        Configurator.defaultConfig()
+                .writer(new FileWriter("log.txt"))
+                .level(Level.DEBUG)
+                .writer(new ConsoleWriter())
+                .activate();
         MyLogger.log("Start");
+        Logger.info("Start");
+        new Main();
+
         scan.close();
     }
 
@@ -241,8 +253,8 @@ public class Main {
             return;
         }
         List<File> listFile = new ArrayList<>();
-        searchCSV(file, listFile);
-        if(listFile.size() < 1){
+        FileImporter.searchCSV(file, listFile);
+        if (listFile.size() < 1) {
             System.out.println("There is not any CSV-file");
             return;
         }
@@ -256,13 +268,13 @@ public class Main {
                 }
             }
             int ans = (int) Input.megaInputNumber("Enter a number of file");
-            if(ans < 0 || ans > listFile.size()){
+            if (ans < 0 || ans > listFile.size()) {
                 System.out.println("Wrong number. Please, try again");
                 continue;
-            }else {
+            } else {
                 List<Animal> list;
                 try {
-                    list = FileImporter.importFromCSVFile(listFile.get(ans));
+                    list = FileImporter.getAnimalsFromCSVFile(listFile.get(ans));
                     for (Animal a : list)
                         System.out.println(a.toString());
                     return;
@@ -272,17 +284,5 @@ public class Main {
                 }
             }
         }
-    }
-
-    private List<File> searchCSV(File file, List listFile) {
-        File[] files = file.listFiles();
-        for (File f : files) {
-            if (f.isDirectory())
-                searchCSV(f, listFile);
-            else if (f.getName().contains(".csv")) {
-                listFile.add(f);
-            }
-        }
-        return listFile;
     }
 }
