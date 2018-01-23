@@ -3,6 +3,7 @@ package main;
 import animals.*;
 import equipments.ExtensibleCage;
 import error.AnimalCreationException;
+import input.CSVFileFilter;
 import input.FileImporter;
 import input.Input;
 import interfases.Soundable;
@@ -252,8 +253,7 @@ public class Main {
             System.out.println("This directory is not found");
             return;
         }
-        List<File> listFile = new ArrayList<>();
-        FileImporter.searchCSV(file, listFile);
+        List<File> listFile = new CSVFileFilter().searchCSV(file);
         if (listFile.size() < 1) {
             System.out.println("There is not any CSV-file");
             return;
