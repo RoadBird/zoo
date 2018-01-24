@@ -8,6 +8,7 @@ import input.FileImporter;
 import input.Input;
 import interfases.Soundable;
 import io.MyLogger;
+import io.MyXMLExit;
 import org.pmw.tinylog.Configurator;
 import org.pmw.tinylog.Level;
 import org.pmw.tinylog.Logger;
@@ -77,6 +78,7 @@ public class Main {
                     break;
             }
         } while (!exit);
+        MyXMLExit.exportToFile(cages);
         System.out.println("Exit!");
     }
 
