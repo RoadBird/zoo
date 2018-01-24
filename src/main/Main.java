@@ -4,6 +4,7 @@ import animals.*;
 import equipments.ExtensibleCage;
 import error.AnimalCreationException;
 import input.CSVFileFilter;
+import input.CSVSearcer;
 import input.FileImporter;
 import input.Input;
 import interfases.Soundable;
@@ -13,7 +14,15 @@ import org.pmw.tinylog.Level;
 import org.pmw.tinylog.Logger;
 import org.pmw.tinylog.writers.ConsoleWriter;
 import org.pmw.tinylog.writers.FileWriter;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -81,16 +90,65 @@ public class Main {
     }
 
     public static void main(String[] args) {
-        Configurator.defaultConfig()
-                .writer(new FileWriter("log.txt"))
-                .level(Level.DEBUG)
-                .writer(new ConsoleWriter())
-                .activate();
-        MyLogger.log("Start");
-        Logger.info("Start");
-        new Main();
+//        Configurator.defaultConfig()
+//                .writer(new FileWriter("log.txt"))
+//                .level(Level.DEBUG)
+//                .writer(new ConsoleWriter())
+//                .activate();
+//        MyLogger.log("Start");
+//        Logger.info("Start");
+        List<Student> studentList = new LinkedList<>();
+        try {
+            File inputFile = new File("students.xml");
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(inputFile);
+            doc.getDocumentElement().normalize();
+            Element element = doc.getDocumentElement();
+            System.out.println("Root element : " + element.getNodeName());
+            NodeList listNode = element.getElementsByTagName("Student");
+            for (int i = 0; i < listNode.getLength(); i++) {
+                System.out.println("Students found");
+                Node nNode = listNode.item(i);
+                if (nNode.getNodeType() == Node.ELEMENT_NODE) {
+                    Element eElement = (Element) nNode;
+                    System.out.println("Student name : "
+                            + eElement.getAttribute("name")
+                            + ", student age : " + eElement.getAttribute("age"));
+                    if(eElement.getAttribute("name").length() != 0 && eElement.getAttribute("age").length() != 0){
+                        studentList.add(new Student(eElement.getAttribute("name"), eElement.getAttribute("age")));
+                    }
+                }
+            }
+            for (Student s : studentList){
+                System.out.println(s);
+            }
 
+        } catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        } catch (SAXException | IOException e) {
+            System.out.println(e.getMessage());
+        }
+        new Main();
         scan.close();
+    }
+
+    private static class Student{
+        String name;
+        String age;
+
+        public Student(String name, String age) {
+            this.name = name;
+            this.age = age;
+        }
+
+        @Override
+        public String toString() {
+            return "Student{" +
+                    "name='" + name + '\'' +
+                    ", age='" + age + '\'' +
+                    '}';
+        }
     }
 
     public void showAnimalInfo() {
@@ -253,7 +311,8 @@ public class Main {
             System.out.println("This directory is not found");
             return;
         }
-        List<File> listFile = new CSVFileFilter().searchCSV(file);
+        CSVSearcer searcher = new CSVFileFilter();
+        List<File> listFile = searcher.searchCSV(file);
         if (listFile.size() < 1) {
             System.out.println("There is not any CSV-file");
             return;

@@ -10,13 +10,14 @@ import java.util.List;
 
 public class FileImporter implements CSVSearcer {
     public List<File> listFile = new LinkedList<>();
+
     public static List<Animal> getAnimalsFromCSVFile(File file) throws AnimalCreationException {
         if (!file.exists()) {
             throw new AnimalCreationException("File not exist");
         }
         List<String[]> listValue = getValueFromCSV(file);
         List<Animal> list = new LinkedList<>();
-        if(listValue.size() == 0){
+        if (listValue.size() == 0) {
             throw new AnimalCreationException("File is empty");
         }
         Animal animal;
@@ -29,7 +30,7 @@ public class FileImporter implements CSVSearcer {
         return list;
     }
 
-    private static List<String[]> getValueFromCSV(File file) throws AnimalCreationException{
+    private static List<String[]> getValueFromCSV(File file) throws AnimalCreationException {
         BufferedReader bf = null;
         try {
             bf = new BufferedReader(new FileReader(file));
@@ -60,14 +61,15 @@ public class FileImporter implements CSVSearcer {
             }
         }
     }
+
     public List<File> searchCSV(File start) {
-        File[] files = start.listFiles();
-        for (File f : files) {
-            if (f.isDirectory())
-                searchCSV(f);
-            else if (f.getName().endsWith(".csv")) {
-                listFile.add(f);
-            }
+        if (start.isDirectory()) {
+            File[] files = start.listFiles();
+            if (files != null)
+                for (File f : files)
+                    searchCSV(f);
+        } else if (start.getName().endsWith(".csv")) {
+            listFile.add(start);
         }
         return listFile;
     }
