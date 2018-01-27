@@ -86,7 +86,7 @@ public class ExtensibleCage<T extends Animal> implements Animal.IAnimalDeadListe
             Animal animal = it.next();
             if (animal.getNickName() == null || animal.getNickName().length() == 0)
                 it.remove();
-            else stringBuilder.append(animal.toString());
+            else stringBuilder.append(animal.toString()).append("\n");
         }
         return stringBuilder.toString();
     }
@@ -94,12 +94,4 @@ public class ExtensibleCage<T extends Animal> implements Animal.IAnimalDeadListe
     public void sortAnimals(){
         Collections.sort(listCage);
     }
-
-//    private static class SizeComparator implements Comparator<Animal> {
-//
-//        @Override
-//        public int compare(Animal o1, Animal o2) {
-//            return (int) Math.ceil(o1.getSize() - o2.getSize());
-//        }
-//    }
 }

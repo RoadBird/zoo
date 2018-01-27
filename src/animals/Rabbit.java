@@ -7,12 +7,12 @@ public class Rabbit extends Herbivore{
 
     public Rabbit(){
         super();
-        type = "Rabbit";
+        type = this.getClass().getSimpleName();
     }
 
     public Rabbit(double size, String nickNames) {
         super(size, nickNames);
-        type = "Rabbit";
+        type = this.getClass().getSimpleName();
     }
 
     @Override

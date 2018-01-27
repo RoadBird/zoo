@@ -60,7 +60,7 @@ public abstract class Animal implements Soundable, Jumpable, Comparable<Animal> 
         return fill - timeSec;
     }
 
-    private void setFill(double fill) {
+    public void setFill(double fill) {
         this.fill = fill;
         lastFeedTime = System.currentTimeMillis();
     }

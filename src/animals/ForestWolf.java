@@ -7,11 +7,11 @@ import main.Main;
 public class ForestWolf extends Canine {
     public ForestWolf(){
         super();
-        type = "Wolf";
+        type = this.getClass().getSimpleName();
     }
     public ForestWolf(double size, String nickNames) {
         super(size, nickNames);
-        type = "Wolf";
+        type = this.getClass().getSimpleName();
     }
 
     @Override

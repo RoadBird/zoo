@@ -6,12 +6,12 @@ import main.Main;
 public class Raven extends Bird {
     public Raven(){
         super();
-        type = "Raven";
+        type = this.getClass().getSimpleName();
     }
 
     public Raven(double size, String nickName) {
         super(size, nickName);
-        type = "Raven";
+        type = this.getClass().getSimpleName();
     }
 
     @Override
@@ -25,7 +25,6 @@ public class Raven extends Bird {
     }
 
     public static Raven createRaven() {
-        System.out.println("Enter size of the new Raven");
         double size = Input.megaInputNumber("Enter size of the new Raven");
         if(size < 0) size = 42;
         System.out.println("And his Name, please");

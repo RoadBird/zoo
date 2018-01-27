@@ -3,12 +3,14 @@ package main;
 import animals.*;
 import equipments.ExtensibleCage;
 import error.AnimalCreationException;
+import error.XMLInputException;
 import input.CSVFileFilter;
 import input.FileImporter;
 import input.Input;
 import interfases.Soundable;
 import io.MyLogger;
 import io.MyXMLExit;
+import io.MyXMLLoad;
 import org.pmw.tinylog.Configurator;
 import org.pmw.tinylog.Level;
 import org.pmw.tinylog.Logger;
@@ -26,9 +28,21 @@ public class Main {
 
     public Main() {
         System.out.println("Yep, Hello!");
-        cages.put(Mammals.class.getSimpleName(), new ExtensibleCage<Mammals>(Mammals.class.getSimpleName()));
-        cages.put(Bird.class.getSimpleName(), new ExtensibleCage<Bird>(Bird.class.getSimpleName()));
-        cages.put(Herbivore.class.getSimpleName(), new ExtensibleCage<Herbivore>(Herbivore.class.getSimpleName()));
+        try {
+            cages = MyXMLLoad.importFromFIle();
+        } catch (XMLInputException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        } catch (AnimalCreationException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        if(cages.isEmpty()) {
+            System.out.println("All cages is empty");
+            cages.put(Mammals.class.getSimpleName(), new ExtensibleCage<Mammals>(Mammals.class.getSimpleName()));
+            cages.put(Bird.class.getSimpleName(), new ExtensibleCage<Bird>(Bird.class.getSimpleName()));
+            cages.put(Herbivore.class.getSimpleName(), new ExtensibleCage<Herbivore>(Herbivore.class.getSimpleName()));
+        }
 
         int i = 0;
         for (ExtensibleCage<? extends Animal> cage : cages.values()) {
@@ -91,7 +105,6 @@ public class Main {
         MyLogger.log("Start");
         Logger.info("Start");
         new Main();
-
         scan.close();
     }
 
@@ -102,7 +115,7 @@ public class Main {
             if (cages.get(cage).getAnimalsCounter() == 0) {
                 stringBuilder.append("Cage is empty\n");
             } else {
-                stringBuilder.append(cages.get(cage).getCageInfo()).append("\n");
+                stringBuilder.append(cages.get(cage).getCageInfo());
             }
         }
         System.out.println(stringBuilder.toString());

@@ -13,12 +13,12 @@ public final class HouseCat extends Feline{
 
     public HouseCat(){
         super();
-        type = "Cat";
+        type = this.getClass().getSimpleName();
     }
 
     public HouseCat(double size, String nickNames) {
         super(size, nickNames);
-        type = "Cat";
+        type = this.getClass().getSimpleName();
     }
 
     public String getBreed() {
