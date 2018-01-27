@@ -8,6 +8,7 @@ import input.CSVFileFilter;
 import input.FileImporter;
 import input.Input;
 import interfases.Soundable;
+import io.MyJSONParser;
 import io.MyLogger;
 import io.MyXMLExit;
 import io.MyXMLLoad;
@@ -21,6 +22,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
+import static io.MyJSONParser.loadFromFile;
+
 public class Main {
     public static final Scanner scan = new Scanner(System.in);
     private Map<String, ExtensibleCage<? extends Animal>> cages = new HashMap<>();
@@ -30,6 +33,7 @@ public class Main {
         System.out.println("Yep, Hello!");
         try {
             cages = MyXMLLoad.importFromFIle();
+            //cages = MyJSONParser.loadFromFile();
         } catch (XMLInputException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -48,7 +52,6 @@ public class Main {
         for (ExtensibleCage<? extends Animal> cage : cages.values()) {
             cagesByNumber.put(++i, cage);
         }
-
         boolean exit = false;
         do {
             System.out.println("What do you want?\n" +
@@ -93,6 +96,7 @@ public class Main {
             }
         } while (!exit);
         MyXMLExit.exportToFile(cages);
+        MyJSONParser.saveInFile(cages);
         System.out.println("Exit!");
     }
 

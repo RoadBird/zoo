@@ -32,24 +32,26 @@ public class MyXMLLoad {
             doc.getDocumentElement().normalize();
             NodeList nListCage = doc.getElementsByTagName("CAGE");
             for(int i = 0; i < nListCage.getLength(); i++){
-                NamedNodeMap nMapCage = nListCage.item(i).getAttributes();
-                Attr type = (Attr) nMapCage.getNamedItem("type");
+                Element eCage = (Element) nListCage.item(i);
+                Attr type = eCage.getAttributeNode("type");
                 if(type == null)
                     throw new XMLInputException("Type of cage is not valid");
 
                 cage = new ExtensibleCage<>(type.getValue());
                 NodeList nListAnimal = nListCage.item(i).getChildNodes();
                 for(int p = 0; p < nListAnimal.getLength(); p++){
-                    NamedNodeMap nMapAnimal = nListAnimal.item(p).getAttributes();
-                    Attr animalType = (Attr) nMapAnimal.getNamedItem("type");
-                    Attr animalSize = (Attr) nMapAnimal.getNamedItem("size");
-                    Attr animalFill = (Attr) nMapAnimal.getNamedItem("fill");
-                    animal = AnimalsCollection.createAnimal(animalType.getValue());
-                    animal.setSize(Double.parseDouble(animalSize.getValue()));
-                    animal.setFill(Double.parseDouble(animalFill.getValue()));
-                    animal.setNickName(nListAnimal.item(p).getTextContent());
-                    cage.addAnimal(animal);
-                    it++;
+                    if(nListAnimal.item(p).getNodeName().equals("ANIMAL")) {
+                        Element eAnimal = (Element) nListAnimal.item(p);
+                        Attr animalType = eAnimal.getAttributeNode("type");
+                        Attr animalSize = eAnimal.getAttributeNode("size");
+                        Attr animalFill = eAnimal.getAttributeNode("fill");
+                        animal = AnimalsCollection.createAnimal(animalType.getValue());
+                        animal.setSize(Double.parseDouble(animalSize.getValue()));
+                        animal.setFill(Double.parseDouble(animalFill.getValue()));
+                        animal.setNickName(nListAnimal.item(p).getTextContent());
+                        cage.addAnimal(animal);
+                        it++;
+                    }
                 }
                 map.put(type.getValue(), cage);
             }
