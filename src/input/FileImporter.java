@@ -21,7 +21,7 @@ public class FileImporter implements CSVSearcer {
         }
         Animal animal;
         for (String[] s : listValue) {
-            animal = AnimalsCollection.createAnimal(s[0]);
+            animal = Animal.createAnimal(s[0]);
             animal.setNickName(s[1]);
             animal.setSize(Double.parseDouble(s[2]));
             list.add(animal);

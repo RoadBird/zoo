@@ -1,5 +1,7 @@
 package animals;
 
+import food.Food;
+
 public abstract class Predator extends Land {
     private boolean isScavenger;
 
@@ -20,7 +22,7 @@ public abstract class Predator extends Land {
     }
 
     public void consume(Herbivore prey){
-        this.feed(prey.getSize() * 10);
+        this.feed(Food.MEAT);
         System.out.println(this.toString() + " ate " + prey.toString());
         prey.onConsumed();
     }

@@ -1,7 +1,13 @@
 package animals;
 
+import error.AnimalCreationException;
+import error.AnimalInvalidTypeException;
+import food.Food;
 import interfases.Jumpable;
 import interfases.Soundable;
+
+import java.util.Random;
+import java.util.UUID;
 
 public abstract class Animal implements Soundable, Jumpable, Comparable<Animal> {
     private IAnimalDeadListener animalDeadListener;
@@ -73,16 +79,44 @@ public abstract class Animal implements Soundable, Jumpable, Comparable<Animal> 
         this.animalDeadListener = animalDeadListener;
     }
 
-    public double feed(double val) {
+    public double feed(Food food) {
         double temp = getFill();
+        switch (food) {
+            case MEAT:
+                System.out.println("Mmmmmmm, meat");
+                break;
+            case CARROT:
+                System.out.println("Om, carrot");
+                break;
+            default:
+                return getFill();
+        }
         if (temp > 0)
-            setFill(temp + val);
+            setFill(temp + food.getEnergyValue());
         return getFill();
     }
 
     protected void die() {
         isAlive = false;
         if (animalDeadListener != null) animalDeadListener.onAnimalDead(this);
+    }
+
+    public static Animal createAnimal(String type) throws AnimalCreationException {
+        try {
+            Class<? extends Animal> clazz = (Class<? extends Animal>) Class.forName("animals." + type);
+            Animal t = clazz.newInstance();
+            t.setNickName("Animal " + UUID.randomUUID().toString());
+            Random r = new Random();
+            t.setSize(20 + r.nextInt(10) - r.nextInt(10));
+            return t;
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            throw new AnimalInvalidTypeException();
+        }
+        throw new AnimalCreationException("Generic animal creation failed call support");
     }
 
     public interface IAnimalDeadListener {

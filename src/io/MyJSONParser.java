@@ -1,12 +1,14 @@
 package io;
 
 import animals.Animal;
+import animals.Bird;
+import animals.Herbivore;
+import animals.Mammals;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import equipments.ExtensibleCage;
 import error.AnimalCreationException;
-import input.AnimalsCollection;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,8 +24,6 @@ public class MyJSONParser {
             mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
             StringWriter stringEmp = new StringWriter();
             mapper.writeValue(stringEmp, ob);
-            System.out.println(stringEmp);
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -32,8 +32,16 @@ public class MyJSONParser {
         Map<String, ExtensibleCage<? extends Animal>> map = new HashMap<>();
         ExtensibleCage<? extends Animal> animalCage;
         Animal animal;
+        File file = new File("save.json");
+        if(!file.exists()) {
+            map = new HashMap<>();
+            map.put(Mammals.class.getSimpleName(), new ExtensibleCage<Mammals>(Mammals.class.getSimpleName()));
+            map.put(Bird.class.getSimpleName(), new ExtensibleCage<Bird>(Bird.class.getSimpleName()));
+            map.put(Herbivore.class.getSimpleName(), new ExtensibleCage<Herbivore>(Herbivore.class.getSimpleName()));
+            return map;
+        }
         try {
-            JsonNode rootNode = mapper.readTree(new File("save.json"));
+            JsonNode rootNode = mapper.readTree(file);
             Iterator<JsonNode> cages = rootNode.elements();
             while(cages.hasNext()){
                 JsonNode cage = cages.next();
@@ -41,7 +49,7 @@ public class MyJSONParser {
                 Iterator<JsonNode> animals = cage.path("animals").elements();
                 while (animals.hasNext()){
                     JsonNode animalNode = animals.next();
-                    animal = AnimalsCollection.createAnimal(animalNode.path("type").asText());
+                    animal = Animal.createAnimal(animalNode.path("type").asText());
                     animal.setSize(animalNode.path("size").asDouble());
                     animal.setNickName(animalNode.path("nickName").asText());
                     animal.setFill(animalNode.path("fill").asDouble());

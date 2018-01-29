@@ -4,6 +4,7 @@ import animals.*;
 import equipments.ExtensibleCage;
 import error.AnimalCreationException;
 import error.XMLInputException;
+import food.Food;
 import input.CSVFileFilter;
 import input.FileImporter;
 import input.Input;
@@ -20,14 +21,15 @@ import org.pmw.tinylog.writers.FileWriter;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
-
-import static io.MyJSONParser.loadFromFile;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
 
 public class Main {
     public static final Scanner scan = new Scanner(System.in);
-    private Map<String, ExtensibleCage<? extends Animal>> cages = new HashMap<>();
-    private Map<Integer, ExtensibleCage<? extends Animal>> cagesByNumber = new HashMap<>();
+    private Map<String, ExtensibleCage<? extends Animal>> cages;
+    private Map<Double, ExtensibleCage<? extends Animal>> cagesByNumber = new HashMap<>();
 
     public Main() {
         System.out.println("Yep, Hello!");
@@ -36,19 +38,12 @@ public class Main {
             //cages = MyJSONParser.loadFromFile();
         } catch (XMLInputException e) {
             System.out.println(e.getMessage());
-            e.printStackTrace();
-        } catch (AnimalCreationException e) {
-            System.out.println(e.getMessage());
-            e.printStackTrace();
-        }
-        if(cages.isEmpty()) {
-            System.out.println("All cages is empty");
+            cages = new HashMap<>();
             cages.put(Mammals.class.getSimpleName(), new ExtensibleCage<Mammals>(Mammals.class.getSimpleName()));
             cages.put(Bird.class.getSimpleName(), new ExtensibleCage<Bird>(Bird.class.getSimpleName()));
             cages.put(Herbivore.class.getSimpleName(), new ExtensibleCage<Herbivore>(Herbivore.class.getSimpleName()));
         }
-
-        int i = 0;
+        double i = 0;
         for (ExtensibleCage<? extends Animal> cage : cages.values()) {
             cagesByNumber.put(++i, cage);
         }
@@ -101,6 +96,7 @@ public class Main {
     }
 
     public static void main(String[] args) {
+        Food food1 = Food.CARROT;
         Configurator.defaultConfig()
                 .writer(new FileWriter("log.txt"))
                 .level(Level.DEBUG)
@@ -174,7 +170,7 @@ public class Main {
                     continue;
                 else if (num > 0 && num <= cage.getAnimalsCounter()) {
                     System.out.println(cage.getAnimals().get((int) num - 1).toString() +
-                            " have new fill is " + cage.getAnimals().get((int) num - 1).feed(50));
+                            " have new fill is " + cage.getAnimals().get((int) num - 1).feed(Food.MEAT));
                 } else
                     System.out.println("Wrong number of animal");
             }
@@ -236,11 +232,11 @@ public class Main {
 
     public ExtensibleCage<? extends Animal> chooseCage() {
         System.out.println("Enter the number of cage:\n");
-        for (int n : cagesByNumber.keySet()) {
+        for (double n : cagesByNumber.keySet()) {
             System.out.println(n + " - Cage of " + cagesByNumber.get(n).getType());
         }
         System.out.println("... or something else to return");
-        return cagesByNumber.get(Integer.decode(scan.nextLine()));
+        return cagesByNumber.get(Input.megaInputNumber(""));
     }
 
     private void removeAnimal() {
