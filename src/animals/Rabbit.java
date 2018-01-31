@@ -2,7 +2,9 @@ package animals;
 
 import input.Input;
 import main.Main;
+import meta.FillRetention;
 
+@FillRetention
 public class Rabbit extends Herbivore{
 
     public Rabbit(){

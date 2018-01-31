@@ -71,7 +71,7 @@ public class ExtensibleCage<T extends Animal> implements Animal.IAnimalDeadListe
     public void onAnimalDead(Animal animal) {
         for (int i = 0; i < getAnimalsCounter(); i++) {
             if (getAnimals().get(i).equals(animal)) {
-                System.out.println(getAnimals().get(i).toString() + " is dead");
+                System.out.println(getAnimals().get(i).getNickName() + " is dead");
                 removeAnimal(i);
                 return;
             }

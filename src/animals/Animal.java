@@ -5,11 +5,16 @@ import error.AnimalInvalidTypeException;
 import food.Food;
 import interfases.Jumpable;
 import interfases.Soundable;
+import meta.FillRetention;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Random;
 import java.util.UUID;
 
 public abstract class Animal implements Soundable, Jumpable, Comparable<Animal> {
+    public static final int INITIAL_FILL = 120;
     private IAnimalDeadListener animalDeadListener;
     private double size;
     private String nickName;
@@ -35,7 +40,7 @@ public abstract class Animal implements Soundable, Jumpable, Comparable<Animal> 
 
     @Override
     public String toString() {
-        return "Animal " + this.getType() + ": " + this.getNickName();
+        return "Animal " + this.getType() + ": " + this.getNickName() + ", fill = " + this.getFill();
     }
 
     public double getSize() {
@@ -101,20 +106,22 @@ public abstract class Animal implements Soundable, Jumpable, Comparable<Animal> 
         if (animalDeadListener != null) animalDeadListener.onAnimalDead(this);
     }
 
-    public static Animal createAnimal(String type) throws AnimalCreationException {
+    public static <ANIMAL_TYPE extends Animal> ANIMAL_TYPE createAnimal(String type, double size, String name) throws AnimalCreationException {
         try {
             Class<? extends Animal> clazz = (Class<? extends Animal>) Class.forName("animals." + type);
-            Animal t = clazz.newInstance();
-            t.setNickName("Animal " + UUID.randomUUID().toString());
-            Random r = new Random();
-            t.setSize(20 + r.nextInt(10) - r.nextInt(10));
-            return t;
+            Constructor constructor = clazz.getConstructor(double.class, String.class);
+            ANIMAL_TYPE animal = (ANIMAL_TYPE) constructor.newInstance(size, name);
+            return animal;
         } catch (InstantiationException e) {
             e.printStackTrace();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             throw new AnimalInvalidTypeException();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
         }
         throw new AnimalCreationException("Generic animal creation failed call support");
     }

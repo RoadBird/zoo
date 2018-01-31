@@ -100,7 +100,7 @@ public class Main {
         Configurator.defaultConfig()
                 .writer(new FileWriter("log.txt"))
                 .level(Level.DEBUG)
-                .writer(new ConsoleWriter())
+                .addWriter(new ConsoleWriter())
                 .activate();
         MyLogger.log("Start");
         Logger.info("Start");

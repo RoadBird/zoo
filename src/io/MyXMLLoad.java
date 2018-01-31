@@ -7,6 +7,7 @@ import animals.Mammals;
 import equipments.ExtensibleCage;
 import error.AnimalCreationException;
 import error.XMLInputException;
+import meta.FillRetention;
 import org.w3c.dom.*;
 import org.xml.sax.SAXException;
 
@@ -25,20 +26,20 @@ public class MyXMLLoad {
         Animal animal;
         int it = 0;
         File loadFile = new File(".autosave");
-        if(!loadFile.exists()) {
+        if (!loadFile.exists()) {
             map = new HashMap<>();
             map.put(Mammals.class.getSimpleName(), new ExtensibleCage<Mammals>(Mammals.class.getSimpleName()));
             map.put(Bird.class.getSimpleName(), new ExtensibleCage<Bird>(Bird.class.getSimpleName()));
             map.put(Herbivore.class.getSimpleName(), new ExtensibleCage<Herbivore>(Herbivore.class.getSimpleName()));
             return map;
         }
-        try{
+        try {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             Document doc = dBuilder.parse(loadFile);
             doc.getDocumentElement().normalize();
             NodeList nListCage = doc.getElementsByTagName("CAGE");
-            for(int i = 0; i < nListCage.getLength(); i++){
+            for (int i = 0; i < nListCage.getLength(); i++) {
                 Element eCage = (Element) nListCage.item(i);
                 Attr type = eCage.getAttributeNode("type");
                 switch (type.getValue()) {
@@ -58,20 +59,23 @@ public class MyXMLLoad {
                         continue;
                 }
                 NodeList nListAnimal = nListCage.item(i).getChildNodes();
-                for(int p = 0; p < nListAnimal.getLength(); p++){
-                    if(nListAnimal.item(p).getNodeName().equals("ANIMAL")) {
+                for (int p = 0; p < nListAnimal.getLength(); p++) {
+                    if (nListAnimal.item(p).getNodeName().equals("ANIMAL")) {
                         try {
                             Element eAnimal = (Element) nListAnimal.item(p);
                             Attr animalType = eAnimal.getAttributeNode("type");
                             Attr animalSize = eAnimal.getAttributeNode("size");
                             Attr animalFill = eAnimal.getAttributeNode("fill");
-                            animal = Animal.createAnimal(animalType.getValue());
-                            animal.setSize(Double.parseDouble(animalSize.getValue()));
-                            animal.setFill(Double.parseDouble(animalFill.getValue()));
-                            animal.setNickName(nListAnimal.item(p).getTextContent());
+                            animal = Animal.createAnimal(animalType.getValue(),
+                                    Double.parseDouble(animalSize.getValue()),
+                                    nListAnimal.item(p).getTextContent());
+                            if (animal.getClass().getAnnotation(FillRetention.class) != null)
+                                animal.setFill(Animal.INITIAL_FILL);
+                            else
+                                animal.setFill(Double.parseDouble(animalFill.getValue()));
                             cage.addAnimal(animal);
                             it++;
-                        } catch (AnimalCreationException e){
+                        } catch (AnimalCreationException e) {
                             e.getMessage();
                         }
                     }
