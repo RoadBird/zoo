@@ -5,9 +5,10 @@ import animals.Herbivore;
 import animals.Predator;
 
 import java.util.*;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ExtensibleCage<T extends Animal> implements Animal.IAnimalDeadListener {
-    private List<T> listCage = new ArrayList<>();
+    private List<T> listCage = new CopyOnWriteArrayList<>();
     private String type;
 
     public ExtensibleCage(String type) {
@@ -69,12 +70,10 @@ public class ExtensibleCage<T extends Animal> implements Animal.IAnimalDeadListe
     //Нехило так должно жрать память,
     // если удаление произошло через итератор перед вызовом метода
     public void onAnimalDead(Animal animal) {
-        for (int i = 0; i < getAnimalsCounter(); i++) {
-            if (getAnimals().get(i).equals(animal)) {
-                System.out.println(getAnimals().get(i).getNickName() + " is dead");
-                removeAnimal(i);
-                return;
-            }
+        if (getAnimals().contains(animal)) {
+            System.out.println(animal.getNickName() + " is dead");
+            getAnimals().remove(animal);
+            return;
         }
     }
 
@@ -91,7 +90,7 @@ public class ExtensibleCage<T extends Animal> implements Animal.IAnimalDeadListe
         return stringBuilder.toString();
     }
 
-    public void sortAnimals(){
+    public void sortAnimals() {
         Collections.sort(listCage);
     }
 }

@@ -13,6 +13,7 @@ import io.MyJSONParser;
 import io.MyLogger;
 import io.MyXMLExit;
 import io.MyXMLLoad;
+import life.LifeCheck;
 import org.pmw.tinylog.Configurator;
 import org.pmw.tinylog.Level;
 import org.pmw.tinylog.Logger;
@@ -25,11 +26,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Main {
     public static final Scanner scan = new Scanner(System.in);
     private Map<String, ExtensibleCage<? extends Animal>> cages;
-    private Map<Double, ExtensibleCage<? extends Animal>> cagesByNumber = new HashMap<>();
+    private Map<Double, ExtensibleCage<? extends Animal>> cagesByNumber = new ConcurrentHashMap<>();
 
     public Main() {
         System.out.println("Yep, Hello!");
@@ -38,7 +42,7 @@ public class Main {
             //cages = MyJSONParser.loadFromFile();
         } catch (XMLInputException e) {
             System.out.println(e.getMessage());
-            cages = new HashMap<>();
+            cages = new ConcurrentHashMap<>();
             cages.put(Mammals.class.getSimpleName(), new ExtensibleCage<Mammals>(Mammals.class.getSimpleName()));
             cages.put(Bird.class.getSimpleName(), new ExtensibleCage<Bird>(Bird.class.getSimpleName()));
             cages.put(Herbivore.class.getSimpleName(), new ExtensibleCage<Herbivore>(Herbivore.class.getSimpleName()));
@@ -48,6 +52,8 @@ public class Main {
             cagesByNumber.put(++i, cage);
         }
         boolean exit = false;
+        LifeCheck lc = LifeCheck.newInstace();
+        lc.setMapOfCages(cages);
         do {
             System.out.println("What do you want?\n" +
                     "1 - Look at all in the Cage\n" +
@@ -83,6 +89,7 @@ public class Main {
                     break;
                 case "0":
                     System.out.println("Thanks!");
+                    lc.stopWork();
                     exit = true;
                     break;
                 default:

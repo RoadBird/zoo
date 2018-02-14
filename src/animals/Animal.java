@@ -21,8 +21,8 @@ public abstract class Animal implements Soundable, Jumpable, Comparable<Animal> 
     protected String type;
     private double fill;
     protected final long createdAt;
-    private long lastFeedTime;
     private boolean isAlive;
+    private boolean isStarving;
 
     protected Animal() {
         setFill(125);
@@ -64,16 +64,22 @@ public abstract class Animal implements Soundable, Jumpable, Comparable<Animal> 
     }
 
     public double getFill() {
-        double timeSec = (System.currentTimeMillis() - lastFeedTime) / 1000;
-        if (fill - timeSec <= 0) {
-            die();
-        }
-        return fill - timeSec;
+        return fill;
     }
 
     public void setFill(double fill) {
         this.fill = fill;
-        lastFeedTime = System.currentTimeMillis();
+        if(getFill() > 20){
+            setStarving(false);
+        }
+    }
+
+    public boolean isStarving() {
+        return isStarving;
+    }
+
+    public void setStarving(boolean starving) {
+        isStarving = starving;
     }
 
     public boolean isAlive() {
@@ -101,7 +107,7 @@ public abstract class Animal implements Soundable, Jumpable, Comparable<Animal> 
         return getFill();
     }
 
-    protected void die() {
+    public void die() {
         isAlive = false;
         if (animalDeadListener != null) animalDeadListener.onAnimalDead(this);
     }
